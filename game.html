@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Orbit Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<header>
+  <nav class="nav">
+    <div class="logo">ORBIT</div>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="games.html">Games</a>
+      <a href="login.html">Login</a>
+    </div>
+  </nav>
+</header>
+
+<main class="game-page">
+
+  <section class="game-hero">
+    <div class="game-hero-info">
+      <h1 id="gameTitle">Loading...</h1>
+      <p id="gameSubtitle"></p>
+
+      <p class="game-description" id="gameDescription"></p>
+
+      <div class="game-meta">
+        <span><strong>Status:</strong> <span id="gameStatus"></span></span>
+        <span><strong>Price:</strong> ₹<span id="gamePrice"></span></span>
+      </div>
+
+      <div class="game-tags" id="gameTags"></div>
+
+      <button class="btn primary" id="playButton">Play on Orbit</button>
+    </div>
+
+    <div class="game-hero-image" id="gameImage"></div>
+  </section>
+
+</main>
+
+<script type="module" src="games/data.js"></script>
+<script type="module" src="js/game.js"></script>
+</body>
+</html>

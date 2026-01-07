@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Orbit — Games</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<header>
+  <nav class="nav">
+    <div class="logo">ORBIT</div>
+    <div class="nav-links" id="navLinks"></div>
+  </nav>
+</header>
+
+<main class="games-page">
+  <h1>Games on Orbit</h1>
+
+  <input
+    type="text"
+    id="searchInput"
+    class="games-search"
+    placeholder="Search games..."
+  />
+
+  <div class="games-layout">
+
+    <!-- Sidebar -->
+    <aside class="games-sidebar">
+      <h3>Filters</h3>
+
+      <div class="filter-group">
+        <h4>Status</h4>
+        <label><input type="checkbox" value="Released" class="filter-status"> Released</label>
+        <label><input type="checkbox" value="Coming Soon" class="filter-status"> Coming Soon</label>
+      </div>
+
+      <div class="filter-group">
+        <h4>Genre</h4>
+        <label><input type="checkbox" value="Racing" class="filter-genre"> Racing</label>
+        <label><input type="checkbox" value="Action" class="filter-genre"> Action</label>
+      </div>
+    </aside>
+
+    <!-- Games -->
+    <section class="games-grid" id="gamesGrid"></section>
+
+  </div>
+</main>
+
+<script type="module" src="js/header.js"></script>
+<script src="js/games.js"></script>
+</body>
+</html>

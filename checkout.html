@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Orbit — Checkout</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <nav class="nav">
+      <div class="logo">ORBIT</div>
+      <div class="nav-links" id="navLinks"></div>
+    </nav>
+  </header>
+
+  <!-- MAIN -->
+  <main class="checkout-page">
+    <div class="checkout-card">
+
+      <h1>Checkout</h1>
+
+      <p class="lead">
+        This is a mock checkout page. Payments are not enabled yet.
+      </p>
+
+      <!-- CART ITEMS (FILLED BY checkout.js) -->
+      <div class="checkout-summary" id="checkoutSummary">
+        <p style="opacity:.7">Loading cart...</p>
+      </div>
+
+      <!-- ACTIONS -->
+      <div class="checkout-actions">
+        <a href="cart.html" class="btn">Back to Cart</a>
+        <button class="btn locked">Payment Coming Soon</button>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- SCRIPTS -->
+  <script type="module" src="js/checkout.js"></script>
+  <script type="module" src="js/header.js"></script>
+
+</body>
+</html>

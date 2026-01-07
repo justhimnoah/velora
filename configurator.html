@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Orbit — Configurator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<header>
+  <nav class="nav">
+    <div class="logo">ORBIT</div>
+    <div class="nav-links" id="navLinks"></div>
+  </nav>
+</header>
+
+<main class="configurator-2 config-main-wrapper">
+
+  <!-- SIDEBAR -->
+  <aside class="config-sidebar">
+    <h3>Your Build</h3>
+
+    <div class="config-progress">
+      <span id="progressText">0% complete</span>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+    </div>
+
+    <div class="config-summary">
+      <p><strong>Tier:</strong> <span id="sum-tier">—</span></p>
+      <p><strong>Storage:</strong> <span id="sum-storage">—</span></p>
+      <p><strong>Controller:</strong> <span id="sum-controller">—</span></p>
+    </div>
+
+    <!-- NEW -->
+    <div class="config-stats">
+      <p><strong>Controller Weight:</strong> <span id="weightValue">280g</span></p>
+      <p><strong>Battery Life:</strong> <span id="batteryValue">10 hrs</span></p>
+    </div>
+
+    <div class="config-price">
+      ₹<span id="totalPrice">0</span>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <section class="config-main">
+
+    <!-- INTRO -->
+    <div class="config-slide active" data-step="intro">
+      <h1>Build Your Orbit</h1>
+      <p class="lead">
+        Customize performance, storage, and your controller experience.
+      </p>
+      <button class="btn config-next">Start</button>
+    </div>
+
+    <!-- TIER -->
+    <div class="config-slide" data-step="tier">
+      <h2>Select Performance Tier</h2>
+
+      <div class="config-options">
+        <div class="config-card" data-tier data-label="Core" data-price="0">
+          <h3>Core</h3>
+          <span>1080p · 60 FPS</span>
+        </div>
+
+        <div class="config-card" data-tier data-label="Pro" data-price="8000">
+          <h3>Pro</h3>
+          <span>1440p · 120 FPS</span>
+        </div>
+
+        <div class="config-card" data-tier data-label="Ultra" data-price="16000">
+          <h3>Ultra</h3>
+          <span>4K · 120 FPS</span>
+        </div>
+      </div>
+
+      <div class="config-nav">
+        <button class="btn config-back">Back</button>
+        <button class="btn config-next locked">Next</button>
+      </div>
+    </div>
+
+    <!-- STORAGE -->
+    <div class="config-slide" data-step="storage">
+      <h2>Select Storage</h2>
+
+      <div class="config-options">
+        <div class="config-card" data-storage data-label="512 GB" data-price="0">
+          <h3>512 GB</h3>
+        </div>
+
+        <div class="config-card" data-storage data-label="1 TB" data-price="4000">
+          <h3>1 TB</h3>
+        </div>
+
+        <div class="config-card" data-storage data-label="2 TB" data-price="9000">
+          <h3>2 TB</h3>
+        </div>
+      </div>
+
+      <div class="config-nav">
+        <button class="btn config-back">Back</button>
+        <button class="btn config-next locked">Next</button>
+      </div>
+    </div>
+
+    <!-- CONTROLLER -->
+    <div class="config-slide" data-step="controller">
+      <h2>Controller Customization</h2>
+
+      <div class="controller-steps">
+        <span class="active">Triggers</span>
+        <span>Haptics</span>
+        <span>Stick Type</span>
+        <span>Stick Caps</span>
+        <span>Back Buttons</span>
+        <span>Battery</span>
+      </div>
+
+      <!-- TRIGGERS -->
+      <div class="controller-slide active">
+        <h3>Triggers</h3>
+        <div class="config-options">
+          <div class="config-card" data-triggers data-label="Standard Triggers" data-price="0">
+            <h3>Standard</h3>
+          </div>
+          <div class="config-card" data-triggers data-label="Adaptive Triggers" data-price="2500">
+            <h3>Adaptive</h3>
+          </div>
+        </div>
+        <div class="config-nav">
+          <button class="btn controller-next locked">Next</button>
+        </div>
+      </div>
+
+      <!-- HAPTICS -->
+      <div class="controller-slide">
+        <h3>Haptics</h3>
+        <div class="config-options">
+          <div class="config-card" data-haptics data-label="Standard Haptics" data-price="0">
+            <h3>Standard</h3>
+          </div>
+          <div class="config-card" data-haptics data-label="Advanced Haptics" data-price="3000">
+            <h3>Advanced</h3>
+          </div>
+        </div>
+        <div class="config-nav">
+          <button class="btn controller-back">Back</button>
+          <button class="btn controller-next locked">Next</button>
+        </div>
+      </div>
+
+      <!-- STICKS -->
+      <div class="controller-slide">
+        <h3>Stick Type</h3>
+        <div class="config-options">
+          <div class="config-card" data-sticks data-label="Standard Sticks" data-price="0">
+            <h3>Standard</h3>
+          </div>
+          <div class="config-card" data-sticks data-label="High-tension Sticks" data-price="3500">
+            <h3>High-tension</h3>
+          </div>
+        </div>
+        <div class="config-nav">
+          <button class="btn controller-back">Back</button>
+          <button class="btn controller-next locked">Next</button>
+        </div>
+      </div>
+
+      <!-- STICK CAPS -->
+      <div class="controller-slide">
+        <h3>Stick Caps</h3>
+        <div class="config-options">
+          <div class="config-card" data-stickcaps data-label="No Stick Caps" data-price="0">
+            <h3>None</h3>
+          </div>
+          <div class="config-card" data-stickcaps data-label="One Stick Cap" data-price="800">
+            <h3>One Stick</h3>
+          </div>
+          <div class="config-card" data-stickcaps data-label="Both Stick Caps" data-price="1500">
+            <h3>Both Sticks</h3>
+          </div>
+        </div>
+        <div class="config-nav">
+          <button class="btn controller-back">Back</button>
+          <button class="btn controller-next locked">Next</button>
+        </div>
+      </div>
+
+      <!-- BACK BUTTONS -->
+      <div class="controller-slide">
+        <h3>Back Buttons</h3>
+        <div class="config-options">
+          <div class="config-card" data-backbuttons data-label="None" data-price="0">
+            <h3>None</h3>
+          </div>
+          <div class="config-card" data-backbuttons data-label="2 Back Buttons" data-price="1500">
+            <h3>2 Buttons</h3>
+          </div>
+          <div class="config-card" data-backbuttons data-label="4 Back Buttons" data-price="3000">
+            <h3>4 Buttons</h3>
+          </div>
+        </div>
+        <div class="config-nav">
+          <button class="btn controller-back">Back</button>
+          <button class="btn controller-next locked">Next</button>
+        </div>
+      </div>
+
+      <!-- BATTERY -->
+      <div class="controller-slide">
+        <h3>Battery</h3>
+        <div class="config-options">
+          <div class="config-card" data-battery data-label="Standard Battery" data-price="0">
+            <h3>Standard</h3>
+          </div>
+          <div class="config-card" data-battery data-label="Extended Battery" data-price="2000">
+            <h3>Extended</h3>
+          </div>
+        </div>
+        <div class="config-nav">
+          <button class="btn controller-back">Back</button>
+          <button class="btn config-next">Finish</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- FINAL -->
+    <div class="config-slide" data-step="final">
+      <h2>Your Orbit Build Is Ready</h2>
+      <p class="lead">Choose what you'd like to do next.</p>
+
+      <div class="config-options">
+        <div class="config-card" id="finalAddToCart">
+          <h3>Add to Cart</h3>
+          <span>Save your build and continue later</span>
+        </div>
+        <div class="config-card" id="finalCheckout">
+          <h3>Proceed to Payment</h3>
+          <span>Complete your purchase now</span>
+        </div>
+      </div>
+    </div>
+
+  </section>
+</main>
+
+<script type="module" src="js/configurator.js"></script>
+<script type="module" src="js/header.js"></script>
+</body>
+</html>

@@ -1,0 +1,145 @@
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: radial-gradient(circle at top, #0b1c3f, #020615);
+  color: white;
+}
+
+/* Header */
+.main-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 60px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.main-header a {
+  margin-left: 24px;
+  text-decoration: none;
+  color: white;
+  opacity: 0.85;
+}
+
+.main-header a.active {
+  opacity: 1;
+}
+
+/* Page */
+.games-page {
+  padding: 60px;
+}
+
+.games-search {
+  width: 100%;
+  max-width: 420px;
+  padding: 14px 18px;
+  border-radius: 14px;
+  border: none;
+  background: rgba(255,255,255,0.1);
+  color: white;
+  margin-bottom: 32px;
+}
+
+/* Layout */
+.games-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 40px;
+}
+
+/* Sidebar */
+.games-sidebar {
+  padding: 24px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+
+.filter-group {
+  margin-top: 24px;
+}
+
+.filter-group h4 {
+  margin-bottom: 10px;
+}
+
+.filter-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+/* Grid */
+.games-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 24px;
+}
+
+/* Card */
+.game-card {
+  position: relative;
+  padding: 22px;
+  border-radius: 22px;
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.08),
+    rgba(255,255,255,0.03)
+  );
+  border: 1px solid rgba(255,255,255,0.14);
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.game-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+}
+
+.game-image {
+  height: 140px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #4da3ff, #1e3cff);
+  margin-bottom: 16px;
+}
+
+.game-card p {
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+/* Status badge */
+.status-badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  padding: 6px 12px;
+  font-size: 12px;
+  border-radius: 999px;
+}
+
+.status-badge.released {
+  background: #2ecc71;
+  color: #083b1f;
+}
+
+.status-badge.coming {
+  background: #f39c12;
+  color: #3a2400;
+}
+
+/* Tags */
+.game-tags {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  padding: 6px 12px;
+  font-size: 13px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.12);
+}
