@@ -24,7 +24,7 @@ onAuthStateChanged(auth, user => {
   if (user) {
     // Logged IN
     navLinks.insertAdjacentHTML("beforeend", link("/configurator.html", "Configurator"));
-    navLinks.insertAdjacentHTML("beforeend", link("/games/games.html", "Games"));
+    navLinks.insertAdjacentHTML("beforeend", link("games/games.html", "Games"));
     navLinks.insertAdjacentHTML("beforeend", link("/cart.html", "Cart"));
     navLinks.insertAdjacentHTML("beforeend", link("/account.html", "My Account"));
     navLinks.insertAdjacentHTML(
