@@ -36,7 +36,7 @@ onAuthStateChanged(auth, async user => {
         <strong>Orbit Console</strong><br>
         Tier: ${item.tier}<br>
         Storage: ${item.storage}<br>
-        <strong>$${item.price}</strong>
+        <strong>${item.price}</strong>
       </div>
     `;
   }).join("");

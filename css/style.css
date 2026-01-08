@@ -660,32 +660,7 @@ body {
 
 /* Layout */
 .games-layout {
-  display: grid;
-  grid-template-columns: 260px 1fr;
-  gap: 40px;
-}
-
-/* Sidebar */
-.games-sidebar {
-  padding: 24px;
-  border-radius: 20px;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.12);
-}
-
-.filter-group {
-  margin-top: 24px;
-}
-
-.filter-group h4 {
-  margin-bottom: 10px;
-}
-
-.filter-group label {
   display: block;
-  margin-bottom: 8px;
-  font-size: 14px;
-  opacity: 0.85;
 }
 
 /* Grid */
@@ -716,15 +691,21 @@ body {
 }
 
 .game-image {
-  height: 140px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, #4da3ff, #1e3cff);
-  margin-bottom: 16px;
+  height: 180px;
+  border-radius: 16px;
+  margin-top: 32px;
+  margin-bottom: 20px; /* 👈 IMPORTANT */
+  position: relative;
+  background-size: cover;
+  background-position: center;
+}
+
+.game-card h3 {
+  margin-bottom: 6px;
 }
 
 .game-card p {
-  font-size: 14px;
-  opacity: 0.8;
+  margin-bottom: 10px;
 }
 
 /* Status badge */
@@ -735,79 +716,163 @@ body {
   padding: 6px 12px;
   font-size: 12px;
   border-radius: 999px;
+  z-index: 2;
 }
 
 .status-badge.released {
-  background: #2ecc71;
-  color: #083b1f;
+  background: rgba(46, 204, 113, 0.18);
+  color: #7dffb3;
+  box-shadow: 0 0 12px rgba(46, 204, 113, 0.25);
 }
 
-.status-badge.coming {
-  background: #f39c12;
-  color: #3a2400;
+.status-badge.released {
+  background: rgba(46, 204, 113, 0.18);
+  color: #7dffb3;
+  box-shadow: 0 0 12px rgba(46, 204, 113, 0.25);
 }
 
 /* Tags */
 .game-tags {
+  margin-top: 12px;
   display: flex;
   gap: 10px;
-  margin-top: 14px;
   flex-wrap: wrap;
-}
-
-.tag {
-  padding: 6px 12px;
-  font-size: 13px;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.12);
-}
-
-/* =========================
-   GAME PAGE
-========================= */
-
-.game-page {
-  padding: 80px;
-}
-
-.game-hero {
-  display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  gap: 60px;
-  align-items: center;
-}
-
-.game-hero-info h1 {
-  font-size: 48px;
-  margin-bottom: 10px;
-}
-
-.game-hero-info p {
-  opacity: 0.85;
-  margin-bottom: 18px;
-}
-
-.game-meta {
-  display: flex;
-  gap: 24px;
-  margin: 18px 0;
-}
-
-.game-tags {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 26px;
-  flex-wrap: wrap;
+  margin-top: 16px;   /* 👈 increase spacing */
 }
 
 .tag {
   padding: 6px 14px;
-  font-size: 13px;
+  font-size: 12px;
   border-radius: 999px;
-  background: rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.14);
+  backdrop-filter: blur(6px);
 }
 
-.game-hero-image {
-  height: 360px;
-  border-radius: 28px;
+/* =========================
+   GAME MEDIA SLIDER
+========================= */
+
+.media-slider {
+  position: relative;
+  max-width: 720px;
+  margin: 40px 0;
+  border-radius: 22px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.06);
+  box-shadow: 0 30px 80px rgba(0,0,0,0.45);
+}
+
+.slides {
+  position: relative;
+  height: 400px;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slide.active {
+  opacity: 1;
+  z-index: 1;
+}
+
+.slide img,
+.slide video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Arrows */
+.slider-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.55);
+  border: none;
+  color: white;
+  font-size: 32px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 2;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.slider-btn:hover {
+  background: rgba(0,0,0,0.75);
+  transform: translateY(-50%) scale(1.05);
+}
+
+.slider-btn.prev {
+  left: 14px;
+}
+
+.slider-btn.next {
+  right: 14px;
+}
+
+/* =========================
+   BACK TO GAMES LINK
+========================= */
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 18px;
+  font-size: 14px;
+  text-decoration: none;
+  color: var(--text-muted);
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.back-link:hover {
+  color: var(--text-main);
+  transform: translateX(-4px);
+}
+
+/* SALE BADGE */
+.status-badge.sale {
+  right: 12px;
+  left: auto;
+  background: #ff4757;
+  color: white;
+}
+
+/* OLD PRICE */
+.old-price {
+  text-decoration: line-through;
+  opacity: 0.6;
+  margin-right: 8px;
+}
+
+.status-badge.sale {
+  right: 12px;
+  left: auto;
+  background: #ff4757;
+  color: white;
+}
+
+.status-text {
+  font-size: 14px;
+  margin: 12px 0;
+  opacity: 0.85;
+}
+
+.game-content {
+  padding-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.game-desc {
+  opacity: 0.85;
+  line-height: 1.45;
 }
