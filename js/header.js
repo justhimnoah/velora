@@ -6,7 +6,7 @@ const navLinks = document.getElementById("navLinks");
 
 // 🔑 Base path resolver (local + GitHub Pages safe)
 const BASE_PATH = location.hostname.includes("github.io")
-  ? "/console-website" // ⬅️ CHANGE to your repo name
+  ? "/orbit" // ⬅️ CHANGE to your repo name
   : "";
 
 function link(path, text, id) {
