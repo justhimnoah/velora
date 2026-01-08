@@ -41,7 +41,7 @@ onAuthStateChanged(auth, user => {
 
   } else {
     // Logged OUT
-    navLinks.insertAdjacentHTML("beforeend", link("/games/games.html", "Games"));
+    navLinks.insertAdjacentHTML("beforeend", link("games/games.html", "Games"));
     navLinks.insertAdjacentHTML("beforeend", link("/login.html", "Login"));
   }
 });
