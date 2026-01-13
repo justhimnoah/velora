@@ -1,36 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Sign in — Orbit</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <title>Orbit Account</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-<header>
-  <nav class="nav">
-    <div class="logo">ORBIT</div>
-    <div class="nav-links" id="navLinks"></div>
-  </nav>
-</header>
+<div class="orbit-auth-bg">
+  <div class="orbit-auth-card">
 
-<main class="auth-page">
-  <div class="auth-card">
-    <h1>Sign in to Orbit</h1>
+    <h1 id="title">Sign in to Orbit</h1>
+    <p id="subtitle">Access your Orbit console</p>
 
-    <p class="lead">
-      Use your Google account to save builds, manage your cart, and continue anytime.
-    </p>
+    <!-- ORBIT ID -->
+    <div class="field" id="orbitField" style="display:none">
+      <label>Orbit ID</label>
+      <input id="orbitId">
+      <small id="orbitStatus"></small>
+    </div>
 
-    <button id="googleLoginBtn" class="btn">
-      Continue with Google
-    </button>
+    <!-- EMAIL -->
+    <div class="field">
+      <label>Email</label>
+      <input id="email" type="email">
+    </div>
+
+    <!-- CONFIRM EMAIL -->
+    <div class="field" id="confirmEmailField" style="display:none">
+      <label>Confirm Email</label>
+      <input id="confirmEmail" type="email">
+    </div>
+
+    <!-- PASSWORD -->
+    <div class="field">
+      <label>Password</label>
+      <input id="password" type="password">
+      <small id="passwordStatus" style="display:none"></small>
+    </div>
+
+    <!-- CONFIRM PASSWORD -->
+    <div class="field" id="confirmPasswordField" style="display:none">
+      <label>Confirm Password</label>
+      <input id="confirmPassword" type="password">
+    </div>
+
+    <button class="orbit-btn" id="submitBtn" disabled>Sign In</button>
+
+    <div class="orbit-auth-links">
+      <a href="#" id="resetPassword">Forgot password?</a>
+      <a href="#" id="toggle">Create account</a>
+    </div>
+
+    <p class="error-text" id="error"></p>
+
   </div>
-</main>
+</div>
 
-<!-- IMPORTANT: type="module" -->
-<script type="module" src="js/auth.js"></script>
-<script type="module" src="js/header.js"></script>
+<script type="module" src="js/login.js"></script>
 </body>
 </html>

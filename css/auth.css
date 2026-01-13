@@ -1,0 +1,187 @@
+/* ============================
+   ORBIT AUTH SYSTEM STYLES
+   ============================ */
+
+:root {
+  --auth-bg: radial-gradient(1200px 600px at 20% 10%, #0b1d3a, #020409);
+  --card-bg: rgba(255, 255, 255, 0.06);
+  --card-border: rgba(255, 255, 255, 0.12);
+  --text-main: #ffffff;
+  --text-muted: #a5a5a5;
+  --accent: #6b7cff;
+  --accent-2: #8a6bff;
+  --danger: #ff6b6b;
+  --success: #4cd964;
+}
+
+/* ---------- PAGE ---------- */
+
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--auth-bg);
+  padding: 32px;
+}
+
+/* ---------- CARD ---------- */
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.08),
+    rgba(255,255,255,0.02)
+  );
+  border: 1px solid var(--card-border);
+  border-radius: 18px;
+  padding: 32px 30px;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 40px 80px rgba(0,0,0,0.55);
+}
+
+/* ---------- HEADER ---------- */
+
+.auth-title {
+  text-align: center;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+}
+
+.auth-subtitle {
+  text-align: center;
+  margin-top: 6px;
+  margin-bottom: 26px;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+/* ---------- BUTTONS ---------- */
+
+.auth-google-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  background: #ffffff;
+  color: #000;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.auth-google-btn:hover {
+  transform: translateY(-1px);
+  opacity: 0.95;
+}
+
+.auth-primary-btn {
+  width: 100%;
+  margin-top: 16px;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.auth-primary-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.auth-primary-btn:not(:disabled):hover {
+  transform: translateY(-1px);
+}
+
+/* ---------- DIVIDER ---------- */
+
+.auth-divider {
+  margin: 22px 0;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(255,255,255,0.15);
+}
+
+/* ---------- INPUTS ---------- */
+
+.auth-group {
+  margin-bottom: 16px;
+}
+
+.auth-group label {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 6px;
+  color: #d0d0d0;
+}
+
+.auth-input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.04);
+  color: #fff;
+  font-size: 15px;
+}
+
+.auth-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* ---------- STATUS TEXT ---------- */
+
+.auth-status {
+  font-size: 13px;
+  margin-top: 6px;
+}
+
+.auth-status.error {
+  color: var(--danger);
+}
+
+.auth-status.success {
+  color: var(--success);
+}
+
+/* ---------- FOOTER ---------- */
+
+.auth-footer {
+  margin-top: 18px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.auth-footer span {
+  color: var(--accent);
+  cursor: pointer;
+}
+
+.auth-footer span:hover {
+  text-decoration: underline;
+}
+
+/* ---------- HIDE ---------- */
+
+.hidden {
+  display: none !important;
+}

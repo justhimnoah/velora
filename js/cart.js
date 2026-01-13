@@ -1,6 +1,5 @@
 import { auth } from "./firebase.js";
 import { db } from "./firebase.js";
-import { formatPrice } from "../js/currency.js";
 import {
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
@@ -30,7 +29,7 @@ function renderCart(items, uid) {
           return `
             <div class="cart-card">
               <h3>${item.title}</h3>
-              <p class="price">${formatPrice(item.price)}</p>
+              <p class="price">$${item.price}</p>
 
               <button
                 class="btn danger"
@@ -60,7 +59,7 @@ function renderCart(items, uid) {
             <p><strong>Weight:</strong> ${item.stats.weight}g</p>
             <p><strong>Battery:</strong> ${item.stats.batteryLife} hrs</p>
 
-            <p class="price">${formatPrice(item.price)}</p>
+            <p class="price">$${item.price}</p>
 
             <button
               class="btn danger"

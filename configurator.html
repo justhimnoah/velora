@@ -62,18 +62,18 @@
       <h2>Select Performance Tier</h2>
 
       <div class="config-options">
-        <div class="config-card" data-tier data-label="Core" data-price="0">
-          <h3>Core</h3>
+        <div class="config-card" data-tier data-label="Base" data-price="4000">
+          <h3>Base</h3>
           <span>1080p · 60 FPS</span>
         </div>
 
-        <div class="config-card" data-tier data-label="Pro" data-price="8000">
-          <h3>Pro</h3>
-          <span>1440p · 120 FPS</span>
+        <div class="config-card" data-tier data-label="Core" data-price="8000">
+          <h3>Core</h3>
+          <span>1440p · 60+ FPS</span>
         </div>
 
-        <div class="config-card" data-tier data-label="Ultra" data-price="16000">
-          <h3>Ultra</h3>
+        <div class="config-card" data-tier data-label="Pro" data-price="12000">
+          <h3>Pro</h3>
           <span>4K · 120 FPS</span>
         </div>
       </div>
@@ -89,16 +89,16 @@
       <h2>Select Storage</h2>
 
       <div class="config-options">
-        <div class="config-card" data-storage data-label="512 GB" data-price="0">
-          <h3>512 GB</h3>
-        </div>
-
-        <div class="config-card" data-storage data-label="1 TB" data-price="4000">
+        <div class="config-card" data-storage data-label="1 TB" data-price="2000">
           <h3>1 TB</h3>
         </div>
 
-        <div class="config-card" data-storage data-label="2 TB" data-price="9000">
+        <div class="config-card" data-storage data-label="1 TB" data-price="4000">
           <h3>2 TB</h3>
+        </div>
+
+        <div class="config-card" data-storage data-label="2 TB" data-price="9000">
+          <h3>3 TB</h3>
         </div>
       </div>
 
@@ -125,7 +125,7 @@
       <div class="controller-slide active">
         <h3>Triggers</h3>
         <div class="config-options">
-          <div class="config-card" data-triggers data-label="Standard Triggers" data-price="0">
+          <div class="config-card" data-triggers data-label="Standard Triggers" data-price="1000">
             <h3>Standard</h3>
           </div>
           <div class="config-card" data-triggers data-label="Adaptive Triggers" data-price="2500">
@@ -141,7 +141,7 @@
       <div class="controller-slide">
         <h3>Haptics</h3>
         <div class="config-options">
-          <div class="config-card" data-haptics data-label="Standard Haptics" data-price="0">
+          <div class="config-card" data-haptics data-label="Standard Haptics" data-price="1000">
             <h3>Standard</h3>
           </div>
           <div class="config-card" data-haptics data-label="Advanced Haptics" data-price="3000">
@@ -158,7 +158,7 @@
       <div class="controller-slide">
         <h3>Stick Type</h3>
         <div class="config-options">
-          <div class="config-card" data-sticks data-label="Standard Sticks" data-price="0">
+          <div class="config-card" data-sticks data-label="Standard Sticks" data-price="1000">
             <h3>Standard</h3>
           </div>
           <div class="config-card" data-sticks data-label="High-tension Sticks" data-price="3500">
@@ -178,10 +178,10 @@
           <div class="config-card" data-stickcaps data-label="No Stick Caps" data-price="0">
             <h3>None</h3>
           </div>
-          <div class="config-card" data-stickcaps data-label="One Stick Cap" data-price="800">
+          <div class="config-card" data-stickcaps data-label="One Stick Cap" data-price="150">
             <h3>One Stick</h3>
           </div>
-          <div class="config-card" data-stickcaps data-label="Both Stick Caps" data-price="1500">
+          <div class="config-card" data-stickcaps data-label="Both Stick Caps" data-price="280">
             <h3>Both Sticks</h3>
           </div>
         </div>
@@ -201,7 +201,7 @@
           <div class="config-card" data-backbuttons data-label="2 Back Buttons" data-price="1500">
             <h3>2 Buttons</h3>
           </div>
-          <div class="config-card" data-backbuttons data-label="4 Back Buttons" data-price="3000">
+          <div class="config-card" data-backbuttons data-label="4 Back Buttons" data-price="2900">
             <h3>4 Buttons</h3>
           </div>
         </div>
@@ -215,10 +215,10 @@
       <div class="controller-slide">
         <h3>Battery</h3>
         <div class="config-options">
-          <div class="config-card" data-battery data-label="Standard Battery" data-price="0">
+          <div class="config-card" data-battery data-label="Standard Battery" data-price="400">
             <h3>Standard</h3>
           </div>
-          <div class="config-card" data-battery data-label="Extended Battery" data-price="2000">
+          <div class="config-card" data-battery data-label="Extended Battery" data-price="800">
             <h3>Extended</h3>
           </div>
         </div>
@@ -249,6 +249,7 @@
   </section>
 </main>
 
+<script type="module" src="js/route-guard.js"></script>
 <script type="module" src="js/configurator.js"></script>
 <script type="module" src="js/header.js"></script>
 </body>
