@@ -28,7 +28,7 @@ onAuthStateChanged(auth, async (user) => {
     const roleSnap = await getDoc(roleRef);
 
     if (!roleSnap.exists()) {
-      window.location.replace("/ndex.html");
+      window.location.replace("index.html");
       return;
     }
 
@@ -63,5 +63,5 @@ onAuthStateChanged(auth, async (user) => {
 ========================= */
 
 openSupportBtn?.addEventListener("click", () => {
-  window.location.href = "admin-support.html";
+  window.location.href = "/admin-support.html";
 });
