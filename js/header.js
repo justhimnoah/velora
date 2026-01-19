@@ -40,7 +40,7 @@ onAuthStateChanged(auth, user => {
     });
 
   } else {
-    navLinks.insertAdjacentHTML("beforeend", link("/games.html", "Games"));
+    navLinks.insertAdjacentHTML("beforeend", link("/games/games.html", "Games"));
     navLinks.insertAdjacentHTML("beforeend", link("/login.html", "Login"));
   }
 });
