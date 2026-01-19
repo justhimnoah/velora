@@ -18,7 +18,7 @@ const openSupportBtn = document.getElementById("openSupportBtn");
 onAuthStateChanged(auth, async (user) => {
   // ❌ Not logged in → kick immediately
   if (!user) {
-    window.location.replace("/index.html");
+    window.location.replace("index.html");
     return;
   }
 
@@ -28,14 +28,14 @@ onAuthStateChanged(auth, async (user) => {
     const roleSnap = await getDoc(roleRef);
 
     if (!roleSnap.exists()) {
-      window.location.replace("/index.html");
+      window.location.replace("/ndex.html");
       return;
     }
 
     const role = roleSnap.data().role;
 
     if (role !== "admin" && role !== "support") {
-      window.location.replace("/index.html");
+      window.location.replace("index.html");
       return;
     }
 
@@ -54,7 +54,7 @@ onAuthStateChanged(auth, async (user) => {
 
   } catch (err) {
     console.error("Admin auth error:", err);
-    window.location.replace("/index.html");
+    window.location.replace("index.html");
   }
 });
 
