@@ -51,7 +51,7 @@ function applyResolvedState(status) {
 
 onAuthStateChanged(auth, async user => {
   if (!user || !ticketId) {
-    location.href = "/login.html";
+    location.href = "login.html";
     return;
   }
 

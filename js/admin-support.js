@@ -23,7 +23,7 @@ let currentFilter = "all";
 
 onAuthStateChanged(auth, async user => {
   if (!user) {
-    window.location.href = "/index.html";
+    window.location.href = "index.html";
     return;
   }
 
@@ -31,7 +31,7 @@ onAuthStateChanged(auth, async user => {
   const role = roleSnap.exists() ? roleSnap.data().role : null;
 
   if (!["admin", "support"].includes(role)) {
-    window.location.href = "/index.html";
+    window.location.href = "index.html";
     return;
   }
 
@@ -95,7 +95,7 @@ function renderTickets() {
     `;
 
     row.querySelector(".view-btn").onclick = () => {
-      window.location.href = `/admin-ticket.html?id=${t.id}`;
+      window.location.href = `admin-ticket.html?id=${t.id}`;
     };
 
     table.appendChild(row);
