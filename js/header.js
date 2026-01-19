@@ -6,11 +6,12 @@ const navLinks = document.getElementById("navLinks");
 
 // 🔑 Base path resolver (local + GitHub Pages safe)
 const BASE_PATH = location.hostname.includes("github.io")
-  ? "/orbit" // ⬅️ CHANGE to your repo name
+  ? "/orbit"
   : "";
 
 function link(path, text, id) {
-  return `<a href="${BASE_PATH}${path}" ${id ? `id="${id}"` : ""}>${text}</a>`;
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  return `<a href="${BASE_PATH}${normalizedPath}" ${id ? `id="${id}"` : ""}>${text}</a>`;
 }
 
 onAuthStateChanged(auth, user => {
@@ -18,11 +19,10 @@ onAuthStateChanged(auth, user => {
 
   navLinks.innerHTML = "";
 
-  // ✅ HOME — ALWAYS PRESENT
+  // HOME
   navLinks.insertAdjacentHTML("beforeend", link("/", "Home"));
 
   if (user) {
-    // Logged IN
     navLinks.insertAdjacentHTML("beforeend", link("configurator.html", "Configurator"));
     navLinks.insertAdjacentHTML("beforeend", link("games/games.html", "Games"));
     navLinks.insertAdjacentHTML("beforeend", link("cart.html", "Cart"));
@@ -40,7 +40,6 @@ onAuthStateChanged(auth, user => {
     });
 
   } else {
-    // Logged OUT
     navLinks.insertAdjacentHTML("beforeend", link("games/games.html", "Games"));
     navLinks.insertAdjacentHTML("beforeend", link("login.html", "Login"));
   }
