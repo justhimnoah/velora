@@ -167,7 +167,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupSupportUI();
   onAuthStateChanged(auth, async user => {
     if (!user) {
-      window.location.href = "/login.html";
+      window.location.href = "login.html";
       return;
     }
 
@@ -184,8 +184,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 const PROFILE_PICS = [
-  "avatar_01.png",
-  "avatar_02.png",
   "test2.jfif",
   "test.jpg"
 ];
@@ -586,7 +584,7 @@ async function loadTickets() {
       <span>${formatDate(t.createdAt?.toDate?.())}</span>
       <span>
         <a class="primary-btn small-btn"
-           href="/support-ticket.html?id=${docSnap.id}">
+           href="support-ticket.html?id=${docSnap.id}">
           View
         </a>
       </span>

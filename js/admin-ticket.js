@@ -51,7 +51,7 @@ let messagesRef;
 ========================= */
 onAuthStateChanged(auth, async user => {
   if (!user || !ticketId) {
-    location.href = "/index.html";
+    location.href = "index.html";
     return;
   }
 
