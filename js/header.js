@@ -9,9 +9,30 @@ const BASE_PATH = location.hostname.includes("github.io")
   ? "/orbit"
   : "";
 
+/**
+ * Normalizes paths so:
+ * "./games/games.html"  -> /games/games.html
+ * "/games/games.html"   -> /games/games.html
+ * "games/games.html"    -> /games/games.html
+ *
+ * Final output:
+ *  - Local: /games/games.html
+ *  - GitHub: /orbit/games/games.html
+ */
 function link(path, text, id) {
-  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
-  return `<a href="${BASE_PATH}${normalizedPath}" ${id ? `id="${id}"` : ""}>${text}</a>`;
+  let cleanPath = path;
+
+  // remove leading "./"
+  if (cleanPath.startsWith("./")) {
+    cleanPath = cleanPath.slice(1);
+  }
+
+  // ensure leading "/"
+  if (!cleanPath.startsWith("/")) {
+    cleanPath = "/" + cleanPath;
+  }
+
+  return `<a href="${BASE_PATH}${cleanPath}" ${id ? `id="${id}"` : ""}>${text}</a>`;
 }
 
 onAuthStateChanged(auth, user => {
@@ -23,10 +44,11 @@ onAuthStateChanged(auth, user => {
   navLinks.insertAdjacentHTML("beforeend", link("/", "Home"));
 
   if (user) {
-    navLinks.insertAdjacentHTML("beforeend", link("/configurator.html", "Configurator"));
-    navLinks.insertAdjacentHTML("beforeend", link("/games.html", "Games"));
-    navLinks.insertAdjacentHTML("beforeend", link("/cart.html", "Cart"));
-    navLinks.insertAdjacentHTML("beforeend", link("/account.html", "My Account"));
+    // LOGGED IN
+    navLinks.insertAdjacentHTML("beforeend", link("./configurator.html", "Configurator"));
+    navLinks.insertAdjacentHTML("beforeend", link("./games/games.html", "Games"));
+    navLinks.insertAdjacentHTML("beforeend", link("./cart.html", "Cart"));
+    navLinks.insertAdjacentHTML("beforeend", link("./account.html", "My Account"));
     navLinks.insertAdjacentHTML(
       "beforeend",
       `<a href="#" id="logoutBtn">Logout</a>`
@@ -40,7 +62,8 @@ onAuthStateChanged(auth, user => {
     });
 
   } else {
-    navLinks.insertAdjacentHTML("beforeend", link("/games/games.html", "Games"));
-    navLinks.insertAdjacentHTML("beforeend", link("/login.html", "Login"));
+    // LOGGED OUT
+    navLinks.insertAdjacentHTML("beforeend", link("./games/games.html", "Games"));
+    navLinks.insertAdjacentHTML("beforeend", link("./login.html", "Login"));
   }
 });
