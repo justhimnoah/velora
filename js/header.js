@@ -1,4 +1,4 @@
-import { auth } from "./firebase.js";
+import { auth } from "js/firebase.js";
 import { onAuthStateChanged, signOut } from
   "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
@@ -23,10 +23,10 @@ onAuthStateChanged(auth, user => {
 
   if (user) {
     // Logged IN
-    navLinks.insertAdjacentHTML("beforeend", link("/configurator.html", "Configurator"));
-    navLinks.insertAdjacentHTML("beforeend", link("/games/games.html", "Games"));
-    navLinks.insertAdjacentHTML("beforeend", link("/cart.html", "Cart"));
-    navLinks.insertAdjacentHTML("beforeend", link("/account.html", "My Account"));
+    navLinks.insertAdjacentHTML("beforeend", link("configurator.html", "Configurator"));
+    navLinks.insertAdjacentHTML("beforeend", link("games/games.html", "Games"));
+    navLinks.insertAdjacentHTML("beforeend", link("cart.html", "Cart"));
+    navLinks.insertAdjacentHTML("beforeend", link("account.html", "My Account"));
     navLinks.insertAdjacentHTML(
       "beforeend",
       `<a href="#" id="logoutBtn">Logout</a>`
@@ -41,7 +41,7 @@ onAuthStateChanged(auth, user => {
 
   } else {
     // Logged OUT
-    navLinks.insertAdjacentHTML("beforeend", link("/games/games.html", "Games"));
-    navLinks.insertAdjacentHTML("beforeend", link("/login.html", "Login"));
+    navLinks.insertAdjacentHTML("beforeend", link("games/games.html", "Games"));
+    navLinks.insertAdjacentHTML("beforeend", link("login.html", "Login"));
   }
 });
