@@ -23,10 +23,10 @@ onAuthStateChanged(auth, user => {
   navLinks.insertAdjacentHTML("beforeend", link("/", "Home"));
 
   if (user) {
-    navLinks.insertAdjacentHTML("beforeend", link("configurator.html", "Configurator"));
-    navLinks.insertAdjacentHTML("beforeend", link("games/games.html", "Games"));
-    navLinks.insertAdjacentHTML("beforeend", link("cart.html", "Cart"));
-    navLinks.insertAdjacentHTML("beforeend", link("account.html", "My Account"));
+    navLinks.insertAdjacentHTML("beforeend", link("/configurator.html", "Configurator"));
+    navLinks.insertAdjacentHTML("beforeend", link("/games.html", "Games"));
+    navLinks.insertAdjacentHTML("beforeend", link("/cart.html", "Cart"));
+    navLinks.insertAdjacentHTML("beforeend", link("/account.html", "My Account"));
     navLinks.insertAdjacentHTML(
       "beforeend",
       `<a href="#" id="logoutBtn">Logout</a>`
@@ -40,7 +40,7 @@ onAuthStateChanged(auth, user => {
     });
 
   } else {
-    navLinks.insertAdjacentHTML("beforeend", link("games/games.html", "Games"));
-    navLinks.insertAdjacentHTML("beforeend", link("login.html", "Login"));
+    navLinks.insertAdjacentHTML("beforeend", link("/games.html", "Games"));
+    navLinks.insertAdjacentHTML("beforeend", link("/login.html", "Login"));
   }
 });
