@@ -157,6 +157,11 @@ async function saveProfilePicture() {
   loadProfile(currentUser);
 }
 
+async function getUserDoc(uid) {
+  const snap = await getDoc(doc(db, "users", uid));
+  return snap.exists() ? snap.data() : {};
+}
+
 /* -------------------------
    INIT
 ------------------------- */
@@ -212,26 +217,28 @@ function setupSidebar() {
    PROFILE
 ------------------------- */
 async function loadProfile(user) {
+  // 🔹 Auth-based
   document.getElementById("displayNameText").textContent =
     user.displayName || "Orbit User";
-
-  document.getElementById("orbitHandle").textContent =
-    "@orbituser";
 
   document.getElementById("emailText").textContent = user.email;
   document.getElementById("memberSince").textContent =
     formatTime(user.metadata.creationTime);
 
+  // 🔹 Firestore-based
+  const userData = await getUserDoc(user.uid);
+
+  // ✅ Orbit Handle (FIXED)
+  document.getElementById("orbitHandle").textContent =
+    userData.orbitId ? `@${userData.orbitId}` : "@orbituser";
+
+  // 🔹 Avatar
   const avatarEl = document.getElementById("profileAvatar");
-
-  const userSnap = await getDoc(doc(db, "users", user.uid));
-  const profilePic = userSnap.exists() ? userSnap.data().profilePic : null;
-
   avatarEl.innerHTML = "";
 
-  if (profilePic) {
+  if (userData.profilePic) {
     const img = document.createElement("img");
-    img.src = `assets/pfp/${profilePic}`;
+    img.src = `assets/pfp/${userData.profilePic}`;
     img.alt = "Profile";
     avatarEl.appendChild(img);
   } else {
@@ -239,6 +246,7 @@ async function loadProfile(user) {
       (user.displayName || "O")[0].toUpperCase();
   }
 
+  // 🔹 Display name edit
   const input = document.getElementById("displayNameInput");
   input.value = user.displayName || "";
 
@@ -248,9 +256,9 @@ async function loadProfile(user) {
     loadProfile(auth.currentUser);
   };
 
-  setupProfilePicGrid(profilePic);
+  // 🔹 Profile picture grid
+  setupProfilePicGrid(userData.profilePic || null);
 }
-
 
 /* -------------------------
    ORBIT ID (UI ONLY)
@@ -271,8 +279,13 @@ function loadOrbitId(user) {
     status.textContent = "You can change your Orbit ID now.";
     btn.disabled = false;
   } else {
+    const remainingText = formatRemaining(remaining);
+
     status.textContent =
-      `You can change your Orbit ID in ${formatRemaining(remaining)}.`;
+      remainingText === "soon"
+        ? "You can change your Orbit ID soon."
+        : `You can change your Orbit ID in ${remainingText}.`;
+
     btn.disabled = true;
   }
 }

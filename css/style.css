@@ -1276,3 +1276,41 @@ small.bad {
   margin-top: 16px;
 }
 
+/* Wrapper sits only around the input */
+.password-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+/* Eye centered to the input height */
+.password-eye {
+  position: absolute;
+  right: 14px;
+  top: 0;
+  bottom: 0;
+  margin: auto 0;          /* vertical center */
+  height: 18px;
+  width: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+  z-index: 1;
+}
+
+.password-eye:hover { opacity: 1; }
+
+.password-eye svg {
+  width: 18px;
+  height: 18px;
+  stroke: #9aa3ff;
+}
+
+/* Optional: tiny right padding so text never sits under the icon */
+.password-wrapper > input[type="password"],
+.password-wrapper > input[type="text"] {
+  padding-right: 40px;
+  box-sizing: border-box;
+}

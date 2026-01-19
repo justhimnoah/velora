@@ -89,6 +89,61 @@ function updateButtonState() {
   );
 }
 
+function attachPasswordToggle(inputEl) {
+  if (!inputEl) return;
+
+  // Create a dedicated wrapper around the input
+  const field = inputEl.parentElement; // .field
+  const wrapper = document.createElement("div");
+  wrapper.className = "password-wrapper";
+
+  // Move the input inside the wrapper
+  field.insertBefore(wrapper, inputEl);
+  wrapper.appendChild(inputEl);
+
+  // Create the eye inside the wrapper
+  const eye = document.createElement("span");
+  eye.className = "password-eye";
+  eye.innerHTML = `
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+      viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round"
+        d="M2.25 12s3.75-6.75 9.75-6.75S21.75 12 21.75 12
+           18 18.75 12 18.75 2.25 12 2.25 12z" />
+      <circle cx="12" cy="12" r="3.25" />
+    </svg>
+  `;
+
+  let visible = false;
+  eye.onclick = () => {
+    visible = !visible;
+    inputEl.type = visible ? "text" : "password";
+    eye.innerHTML = visible
+      ? `
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+        viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M3 3l18 18M10.6 10.6a2.25 2.25 0 003.18 3.18" />
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M2.25 12s3.75-6.75 9.75-6.75
+             c2.02 0 3.8.64 5.29 1.58
+             M21.75 12s-1.2 2.16-3.34 3.98
+             c-1.54 1.3-3.5 2.77-6.41 2.77
+             c-6 0-9.75-6.75-9.75-6.75" />
+      </svg>`
+      : `
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+        viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M2.25 12s3.75-6.75 9.75-6.75S21.75 12 21.75 12
+             18 18.75 12 18.75 2.25 12 2.25 12z" />
+        <circle cx="12" cy="12" r="3.25" />
+      </svg>`;
+  };
+
+  wrapper.appendChild(eye);
+}
+
 /* =====================
    LOGIN INPUT ENABLE
 ===================== */
@@ -298,3 +353,24 @@ submitBtn.onclick = async () => {
       showError("Something went wrong");
   }
 };
+
+function handleEnterSubmit(e) {
+  if (e.key === "Enter" && !submitBtn.disabled) {
+    submitBtn.click();
+  }
+}
+
+// Apply to all relevant inputs
+[
+  email,
+  password,
+  confirmEmail,
+  confirmPassword,
+  orbitId
+].forEach(input => {
+  if (!input) return;
+  input.addEventListener("keydown", handleEnterSubmit);
+});
+
+attachPasswordToggle(password);
+attachPasswordToggle(confirmPassword);
