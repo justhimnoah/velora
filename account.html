@@ -2,164 +2,418 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>My Account · Orbit</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Account | Orbit</title>
 
-  <!-- Main site styles -->
   <link rel="stylesheet" href="css/style.css" />
 
   <style>
-    body {
-      background: linear-gradient(180deg, #0b0e14, #05070b);
+    .account-layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 32px;
+      padding: 40px;
     }
 
-    .account-page {
-      display: flex;
-      min-height: calc(100vh - 70px);
-    }
-
-    /* ---------- SIDEBAR ---------- */
     .account-sidebar {
-      width: 280px;
-      margin: 20px;
       background: rgba(255,255,255,0.035);
-      border: 1px solid rgba(255,255,255,0.08);
       border-radius: 18px;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
+      padding: 16px;
+      border: 1px solid rgba(255,255,255,0.08);
+      height: fit-content;
     }
 
-    .account-identity {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 28px;
-    }
-
-    .account-avatar {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #5b7cfa, #7a5bfa);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 20px;
-      color: #fff;
-    }
-
-    .orbit-id {
-      font-size: 13px;
-      color: #9a9a9a;
-    }
-
-    .account-nav {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      flex-grow: 1;
-    }
-
-    .account-tab {
+    .side-item {
+      width: 100%;
       background: none;
       border: none;
-      color: #dcdcdc;
-      padding: 10px 12px;
-      border-radius: 8px;
+      color: white;
+      padding: 12px 16px;
+      border-radius: 12px;
       text-align: left;
       cursor: pointer;
       font-size: 14px;
     }
 
-    .account-tab.active,
-    .account-tab:hover {
-      background: rgba(255,255,255,0.08);
-    }
+    .side-item:hover { background: rgba(255,255,255,0.06); }
+    .side-item.active { background: rgba(255,255,255,0.1); }
 
-    .account-logout {
-      margin-top: auto;
-      background: none;
-      border: 1px solid rgba(255,255,255,0.15);
-      color: #fff;
-      padding: 10px;
-      border-radius: 10px;
-      cursor: pointer;
-    }
-
-    /* ---------- CONTENT ---------- */
-    .account-content {
-      flex: 1;
-      padding: 40px;
-    }
-
-    .account-section {
-      display: none;
-      max-width: 720px;
-    }
-
-    .account-section.active {
-      display: block;
-    }
-
-    .account-section h2 {
-      font-size: 26px;
-      margin-bottom: 24px;
-    }
+    .account-content h1 { font-size: 30px; margin-bottom: 6px; }
+    .subtitle { opacity: 0.7; margin-bottom: 24px; }
 
     .account-card {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 14px;
-      padding: 20px;
-      margin-bottom: 20px;
+      background: rgba(255,255,255,0.045);
+      border-radius: 22px;
+      padding: 26px;
+      border: 1px solid rgba(255,255,255,0.09);
+      max-width: 640px;
+      margin-bottom: 28px;
     }
 
-    .account-card label {
-      display: block;
-      font-size: 13px;
-      margin-bottom: 6px;
-      color: #bfbfbf;
+    .section { display: none; }
+    .section.active { display: block; }
+
+    /* PROFILE */
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 18px;
     }
 
-    .account-card input {
-      width: 100%;
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(255,255,255,0.05);
-      color: #fff;
-      font-size: 15px;
-    }
-
-    .account-card input:focus {
-      outline: none;
-      border-color: #5b7cfa;
-    }
-
-    .account-card p {
-      font-size: 14px;
-      margin: 6px 0;
-    }
-
-    .btn {
-      margin-top: 12px;
-      padding: 12px 18px;
-      border-radius: 10px;
-      border: none;
-      background: linear-gradient(135deg, #5b7cfa, #7a5bfa);
-      color: #fff;
+    .avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      overflow: hidden;          /* 🔑 CLIPS IMAGE */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #6f78ff;       /* fallback for letter avatar */
       font-weight: 600;
+      font-size: 28px;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;         /* 🔑 PREVENTS STRETCH / OVERFLOW */
+      border-radius: 50%;
+    }
+
+    .display-name { font-size: 18px; font-weight: 600; }
+    .orbit-handle { opacity: 0.7; font-size: 14px; }
+
+    .profile-meta {
+      margin-bottom: 18px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .form-group { margin-top: 22px; }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(0,0,0,0.35);
+      color: white;
+      font-size: 14px;
+    }
+
+    .primary-btn {
+      margin-top: 12px;
+      padding: 10px 18px;
+      border-radius: 12px;
+      border: none;
+      background: linear-gradient(135deg,#6c7cff,#8892ff);
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .hint { margin-top: 8px; font-size: 13px; opacity: 0.75; }
+
+    .primary-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      filter: grayscale(0.3);
+    }
+
+    input:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      background: rgba(0,0,0,0.55);
+    }
+
+    /* PRIVACY + CONSOLE SHARED */
+    .privacy-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 28px;
+      align-items: start;
+      padding: 14px 0;
+    }
+
+    .privacy-info {
+      font-size: 14px;
+      line-height: 1.55;
+      opacity: 0.85;
+    }
+
+    .privacy-info strong {
+      display: block;
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+
+    .segmented {
+      display: flex;
+      background: rgba(0,0,0,0.35);
+      border-radius: 12px;
+      padding: 4px;
+    }
+
+    .segment {
+      padding: 7px 14px;
+      font-size: 13px;
+      border-radius: 10px;
+      cursor: pointer;
+      opacity: 0.6;
+      min-width: 78px;
+      text-align: center;
+    }
+
+    .segment.active {
+      background: linear-gradient(135deg,#6c7cff,#8892ff);
+      opacity: 1;
+      font-weight: 600;
+    }
+
+    .save-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 26px;
+    }
+
+    .save-status {
+      font-size: 13px;
+      color: rgba(255,255,255,0.85);
+      opacity: 0;
+      transform: translateY(2px);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      pointer-events: none;
+    }
+
+    .save-status.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ORDERS */
+    .orders-table {
+      font-size: 14px;
+    }
+
+    .orders-header,
+    .order-row {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 2fr 1fr 1fr;
+      gap: 12px;
+      padding: 12px 0;
+      align-items: center;
+    }
+
+    .orders-header {
+      opacity: 0.6;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      font-size: 13px;
+    }
+
+    .order-row {
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .order-status {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      padding: 6px 12px;
+      border-radius: 999px;
+
+      font-weight: 600;
+      font-size: 0.9rem;
+
+      width: fit-content;
+      max-width: max-content;
+      white-space: nowrap;
+    }
+
+    .order-status.paid {
+      color: #4ade80; /* green */
+    }
+
+    .orders-empty {
+      padding: 22px 0;
+      opacity: 0.6;
+      font-size: 14px;
+    }
+
+    .order-row span:nth-child(2) {
+      white-space: nowrap;
+    }
+    
+    .order-status.open { color: #facc15; }
+    .order-status.in_progress { color: #60a5fa; }
+    .order-status.resolved { color: #22c55e; }
+
+    /* Match textarea & select with input styling */
+    .form-group textarea {
+      min-height: 120px;
+    }
+
+    .form-group select {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(0,0,0,0.35);
+      color: white;
+      font-size: 14px;
+      resize: vertical;
+    }
+
+    /* Remove default white dropdown arrow background (Chrome) */
+    .form-group select {
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg fill='white' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.25 7.5L10 12.25L14.75 7.5'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      background-size: 16px;
+    }
+
+    /* Support textarea fix */
+    #support textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(0,0,0,0.35);
+      color: white;
+      font-size: 14px;
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    #support textarea:focus {
+      outline: none;
+      border-color: rgba(108,124,255,0.6);
+    }
+
+    /* Support category dropdown */
+    #support select {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(0,0,0,0.35);
+      color: white;
+      font-size: 14px;
+      appearance: none;
+      -webkit-appearance: none;
       cursor: pointer;
     }
 
-    .empty {
-      text-align: center;
-      color: #9a9a9a;
+    /* Dropdown arrow */
+    #support select {
+      background-image:
+        linear-gradient(45deg, transparent 50%, white 50%),
+        linear-gradient(135deg, white 50%, transparent 50%);
+      background-position:
+        calc(100% - 18px) calc(50% - 3px),
+        calc(100% - 13px) calc(50% - 3px);
+      background-size: 5px 5px;
+      background-repeat: no-repeat;
+    }
+
+    /* Dropdown list */
+    #support select option {
+      background: #0b1222;
+      color: white;
+    }
+
+    /* Support ticket status chips */
+    .order-status.open {
+      background: rgba(108,124,255,0.18);
+      color: #8a96ff;
+    }
+
+    .order-status.in_progress {
+      background: rgba(255,193,7,0.18);
+      color: #ffc107;
+    }
+
+    .order-status.resolved {
+      background: rgba(46,204,113,0.18);
+      color: #2ecc71;
+    }
+
+    .primary-btn {
+      text-decoration: none;
+    }
+
+    .primary-btn:hover {
+      text-decoration: none;
+    }
+
+    .pfp-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, 64px);
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .pfp-grid img {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid transparent;
+      object-fit: cover;
+      background: #111;
+    }
+
+    .pfp-grid img.selected {
+      border-color: var(--accent, #6ea8ff);
+    }
+
+    .pfp-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .pfp-grid img {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      cursor: pointer;
+      object-fit: cover;
+      opacity: 0.6;
+      border: 2px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .pfp-grid img:hover {
+      opacity: 1;
+    }
+
+    .pfp-grid img.selected {
+      opacity: 1;
+      border-color: #6c7cff; /* match your primary */
+      box-shadow: 0 0 0 2px rgba(108,124,255,0.25);
     }
   </style>
+
+  <script type="module" src="js/firebase.js"></script>
+  <script type="module" src="js/header.js"></script>
+  <script type="module" src="js/account.js" defer></script>
 </head>
+
 <body>
 
 <header>
@@ -169,74 +423,338 @@
   </nav>
 </header>
 
-<main class="account-page">
+<main class="account-layout">
 
-  <!-- SIDEBAR -->
   <aside class="account-sidebar">
-    <div class="account-identity">
-      <div class="account-avatar" id="avatarLetter">O</div>
-      <div>
-        <h3 id="displayNameText">Loading…</h3>
-        <p class="orbit-id" id="orbitIdText">—</p>
-      </div>
-    </div>
-
-    <nav class="account-nav">
-      <button class="account-tab active" data-tab="profile">Profile</button>
-      <button class="account-tab" data-tab="security">Security</button>
-      <button class="account-tab" data-tab="orders">Orders</button>
-    </nav>
-
-    <button class="account-logout" id="logoutBtn">Log Out</button>
+    <button class="side-item active" data-section="profile">Profile</button>
+    <button class="side-item" data-section="security">Security</button>
+    <button class="side-item" data-section="privacy">Privacy</button>
+    <button class="side-item" data-section="console">Console Settings</button>
+    <button class="side-item" data-section="orders">Orders</button>
+    <button class="side-item" data-section="support">Support</button>
   </aside>
 
-  <!-- CONTENT -->
   <section class="account-content">
 
-    <!-- PROFILE -->
-    <div class="account-section active" id="profile">
-      <h2>Profile</h2>
+   <!-- PROFILE -->
+  <div class="section active" id="profile">
+    <h1>Profile</h1>
+    <p class="subtitle">Manage your identity and public profile.</p>
 
-      <div class="account-card">
-        <label>Display Name</label>
-        <input type="text" id="displayNameInput" />
-        <button class="btn">Save</button>
+    <!-- MAIN PROFILE INFO CARD -->
+    <div class="account-card">
+      <div class="profile-header">
+        <div class="avatar" id="profileAvatar">O</div>
+        <div>
+          <div class="display-name" id="displayNameText">Orbit User</div>
+          <div class="orbit-handle" id="orbitHandle">@orbituser</div>
+        </div>
       </div>
 
-      <div class="account-card">
-        <p><strong>Email:</strong> <span id="emailText">—</span></p>
-        <p><strong>Orbit ID:</strong> <span id="orbitIdText2">—</span></p>
-        <p><strong>Member since:</strong> <span id="memberSince">—</span></p>
+      <div class="profile-meta">
+        <div><strong>Email:</strong> <span id="emailText"></span></div>
+        <div><strong>Member since:</strong> <span id="memberSince"></span></div>
+      </div>
+
+      <div class="form-group">
+        <label>Display Name</label>
+        <input type="text" id="displayNameInput" />
+        <button class="primary-btn" id="saveDisplayName">Save</button>
+      </div>
+
+      <div class="form-group">
+        <label>Orbit ID</label>
+        <input type="text" id="orbitIdInput" disabled />
+        <div class="hint" id="orbitIdStatus"></div>
+        <button class="primary-btn" id="changeOrbitIdBtn" disabled>
+          Change Orbit ID
+        </button>
       </div>
     </div>
 
+    <!-- PROFILE PICTURE CARD -->
+    <div class="account-card">
+      <h3>Profile Picture</h3>
+
+      <div class="pfp-grid" id="pfpGrid"></div>
+
+      <button class="primary-btn"
+              id="saveProfilePicBtn"
+              disabled>
+        Save Profile Picture
+      </button>
+    </div>
+  </div>
+
     <!-- SECURITY -->
-    <div class="account-section" id="security">
-      <h2>Security</h2>
+    <div class="section" id="security">
+      <h1>Security</h1>
+      <p class="subtitle">Manage your email, password, and account security.</p>
 
       <div class="account-card">
-        <p><strong>Email:</strong> <span id="securityEmail">—</span></p>
-        <p><strong>Password:</strong> ••••••••</p>
-        <button class="btn" id="resetPasswordBtn">Change Password</button>
+        <h3>Change Email Address</h3>
+        <div class="form-group">
+          <label>Current Email</label>
+          <input type="email" disabled />
+        </div>
+        <div class="form-group">
+          <label>New Email</label>
+          <input type="email" />
+        </div>
+        <button class="primary-btn">Send Verification</button>
+      </div>
+
+      <div class="account-card">
+        <h3>Change Password</h3>
+        <div class="form-group">
+          <label>Current Password</label>
+          <input type="password" />
+        </div>
+        <div class="form-group">
+          <label>New Password</label>
+          <input type="password" />
+        </div>
+        <div class="form-group">
+          <label>Confirm New Password</label>
+          <input type="password" />
+          <div class="hint">Use at least 8 characters.</div>
+        </div>
+        <button class="primary-btn">Update Password</button>
+      </div>
+
+      <div class="account-card">
+        <h3>Security Activity</h3>
+        <div class="profile-meta">
+          <div><strong>Account created:</strong> —</div>
+          <div><strong>Last login:</strong> —</div>
+          <div><strong>Last password change:</strong> —</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRIVACY -->
+    <div class="section" id="privacy">
+      <h1>Privacy</h1>
+      <p class="subtitle">Control who can see and interact with you across the ecosystem.</p>
+
+      <div class="account-card">
+
+        <div class="privacy-row" data-key="profileVisibility">
+          <div class="privacy-info">
+            <strong>Profile Visibility</strong>
+            Controls who can see your display name, avatar, and MyID.
+          </div>
+          <div class="segmented">
+            <div class="segment active">Everyone</div>
+            <div class="segment">Friends</div>
+            <div class="segment">No one</div>
+          </div>
+        </div>
+
+        <div class="privacy-row" data-key="friendRequests">
+          <div class="privacy-info">
+            <strong>Friend Requests</strong>
+            Who can send you friend requests.
+          </div>
+          <div class="segmented">
+            <div class="segment active">Everyone</div>
+            <div class="segment">Friends</div>
+            <div class="segment">No one</div>
+          </div>
+        </div>
+
+        <div class="privacy-row" data-key="onlineStatus">
+          <div class="privacy-info">
+            <strong>Online Status</strong>
+            Who can see when you are online.
+          </div>
+          <div class="segmented">
+            <div class="segment active">Everyone</div>
+            <div class="segment">Friends</div>
+            <div class="segment">No one</div>
+          </div>
+        </div>
+
+        <div class="privacy-row" data-key="currentActivity">
+          <div class="privacy-info">
+            <strong>Current Activity</strong>
+            Who can see your current game or activity.
+          </div>
+          <div class="segmented">
+            <div class="segment active">Everyone</div>
+            <div class="segment">Friends</div>
+            <div class="segment">No one</div>
+          </div>
+        </div>
+
+        <div class="privacy-row" data-key="messages">
+          <div class="privacy-info">
+            <strong>Messages</strong>
+            Who can send you messages.
+          </div>
+          <div class="segmented">
+            <div class="segment active">Everyone</div>
+            <div class="segment">Friends</div>
+            <div class="segment">No one</div>
+          </div>
+        </div>
+
+        <div class="save-row">
+          <button class="primary-btn" id="savePrivacyBtn">
+            Save Privacy Settings
+          </button>
+          <span class="save-status" id="privacySaveStatus">Saved</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- CONSOLE SETTINGS -->
+    <div class="section" id="console">
+      <h1>Console Settings</h1>
+      <p class="subtitle">Manage console-linked preferences.</p>
+
+      <div class="account-card">
+
+        <div class="privacy-row" data-key="requirePassword">
+          <div class="privacy-info">
+            <strong>Require Password on Login</strong>
+          </div>
+          <div class="segmented">
+            <div class="segment active">On</div>
+            <div class="segment">Off</div>
+          </div>
+        </div>
+
+        <div class="privacy-row" data-key="autoSignIn">
+          <div class="privacy-info">
+            <strong>Auto Sign-In</strong>
+          </div>
+          <div class="segmented">
+            <div class="segment active">On</div>
+            <div class="segment">Off</div>
+          </div>
+        </div>
+
+        <div class="privacy-row" data-key="lockAfterInactivity">
+          <div class="privacy-info">
+            <strong>Lock After Inactivity</strong>
+          </div>
+          <div class="segmented">
+            <div class="segment active">On</div>
+            <div class="segment">Off</div>
+          </div>
+        </div>
+
+        <div class="privacy-row" data-key="ageFiltering">
+          <div class="privacy-info">
+            <strong>Age-Based Content Filtering</strong>
+          </div>
+          <div class="segmented">
+            <div class="segment active">On</div>
+            <div class="segment">Off</div>
+          </div>
+        </div>
+
+        <div class="privacy-row" data-key="restrictMature">
+          <div class="privacy-info">
+            <strong>Restrict Mature Content</strong>
+          </div>
+          <div class="segmented">
+            <div class="segment active">On</div>
+            <div class="segment">Off</div>
+          </div>
+        </div>
+
+        <div class="save-row">
+          <button class="primary-btn" id="saveConsoleBtn">Save Console Settings</button>
+          <span class="save-status" id="consoleSaveStatus">Saved</span>
+        </div>
+
       </div>
     </div>
 
     <!-- ORDERS -->
-    <div class="account-section" id="orders">
-      <h2>Orders</h2>
+    <div class="section" id="orders">
+      <h1>Orders</h1>
+      <p class="subtitle">View your purchase history and order details.</p>
 
-      <div class="account-card empty">
-        <p>No orders yet.</p>
-        <span>Your Orbit journey starts here.</span>
+      <div class="account-card">
+
+        <div class="orders-table">
+
+          <div class="orders-header">
+            <span>Order ID</span>
+            <span>Date</span>
+            <span>Product</span>
+            <span>Amount</span>
+            <span>Status</span>
+            <span></span>
+          </div>
+
+          <div id="ordersList">
+            <div class="orders-empty">
+              You haven’t made any purchases yet.
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SUPPORT -->
+    <div class="section" id="support">
+      <h1>Support</h1>
+      <p class="subtitle">Create and manage your support requests.</p>
+
+      <!-- CREATE TICKET -->
+      <div class="account-card">
+        <h3>Create Support Ticket</h3>
+
+        <div class="form-group">
+          <label>Subject</label>
+          <input type="text" id="ticketSubject" placeholder="Short summary" />
+        </div>
+
+        <div class="form-group">
+          <label>Category</label>
+          <select id="ticketCategory">
+            <option value="General">General</option>
+            <option value="Console">Console</option>
+            <option value="Orders">Orders</option>
+            <option value="Account">Account</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Message</label>
+          <textarea id="ticketMessage" rows="4"></textarea>
+        </div>
+
+        <div class="save-row">
+          <button class="primary-btn" id="createTicketBtn">Submit Ticket</button>
+          <span class="save-status" id="ticketCreateStatus">Ticket created</span>
+        </div>
+      </div>
+
+      <!-- TICKET HISTORY -->
+      <div class="account-card">
+        <h3>Your Tickets</h3>
+
+        <div class="orders-header">
+          <span>ID</span>
+          <span>Subject</span>
+          <span>Status</span>
+          <span>Date</span>
+        </div>
+
+        <div id="ticketList"></div>
       </div>
     </div>
 
   </section>
 </main>
 
-<!-- SCRIPTS -->
-<script type="module" src="js/route-guard.js"></script>
-<script type="module" src="js/account.js"></script>
-<script type="module" src="js/header.js"></script>
 </body>
 </html>
