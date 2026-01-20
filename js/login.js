@@ -325,6 +325,11 @@ submitBtn.onclick = async () => {
       emailVerified: false
     });
 
+    await setDoc(doc(db, "roles", cred.user.uid), {
+      role: "user",
+      createdAt: serverTimestamp()
+    });
+
     await setDoc(
       doc(db, "veloraIds", veloraId.value.trim().toLowerCase()),
       { uid: cred.user.uid }
