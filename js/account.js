@@ -261,17 +261,18 @@ async function loadProfile(user) {
 }
 
 /* -------------------------
-   Velora ID (UI ONLY)
+   VELORA ID
 ------------------------- */
-async function loadveloraId(user) {
+async function loadVeloraId(user) {
   const input = document.getElementById("veloraIdInput");
   const status = document.getElementById("veloraIdStatus");
   const btn = document.getElementById("changeVeloraIdBtn");
 
-  // UI defaults
+  // Disable input/button by default
   input.disabled = true;
   btn.disabled = true;
 
+  // Fetch user's Firestore data
   const userSnap = await getDoc(doc(db, "users", user.uid));
   if (!userSnap.exists()) {
     status.textContent = "Unable to load Velora ID data.";
@@ -279,37 +280,70 @@ async function loadveloraId(user) {
   }
 
   const userData = userSnap.data();
-
-  // 🔹 Show current Velora ID
-  input.value = userData.veloraId || "";
-
-  // 🔹 Cooldown logic (7 days)
-  const cooldownMs = 7 * 24 * 60 * 60 * 1000;
-
+  const currentVeloraId = userData.veloraId || "";
   const lastChangedTs = userData.veloraLastChanged;
-  if (!lastChangedTs) {
-    // Safety fallback (old users)
-    status.textContent = "You can change your Velora ID now.";
-    btn.disabled = false;
-    return;
-  }
 
-  const lastChanged = lastChangedTs.toDate().getTime();
+  input.value = currentVeloraId;
+
+  // Set handle in UI
+  document.getElementById("veloraHandle").textContent =
+    currentVeloraId ? `@${currentVeloraId}` : "@veloruser";
+
+  // Cooldown logic: 7 days
+  const cooldownMs = 7 * 24 * 60 * 60 * 1000;
+  const lastChanged = lastChangedTs?.toDate?.().getTime() || 0;
   const remaining = lastChanged + cooldownMs - Date.now();
 
   if (remaining <= 0) {
     status.textContent = "You can change your Velora ID now.";
     btn.disabled = false;
   } else {
-    const remainingText = formatRemaining(remaining);
-
     status.textContent =
-      remainingText === "soon"
-        ? "You can change your Velora ID soon."
-        : `You can change your Velora ID in ${remainingText}.`;
-
+      `You can change your Velora ID in ${formatRemaining(remaining)}.`;
     btn.disabled = true;
   }
+
+  // Change Velora ID
+  btn.onclick = async () => {
+    const newId = input.value.trim().toLowerCase();
+
+    // Validation
+    if (!newId.match(/^[a-z0-9_]{4,16}$/)) {
+      status.textContent = "ID must be 4–16 chars, lowercase letters, numbers, or underscore.";
+      return;
+    }
+    if (newId === currentVeloraId) return;
+
+    try {
+      // Check if the ID already exists in Firestore
+      const idSnap = await getDoc(doc(db, "veloraIds", newId));
+      if (idSnap.exists()) {
+        status.textContent = "This Velora ID is already taken.";
+        return;
+      }
+
+      // Update user's Firestore document
+      await setDoc(
+        doc(db, "users", user.uid),
+        {
+          veloraId: newId,
+          veloraLastChanged: serverTimestamp()
+        },
+        { merge: true }
+      );
+
+      // Register the new ID in the global collection
+      await setDoc(doc(db, "veloraIds", newId), { userId: user.uid });
+
+      status.textContent = "Velora ID updated successfully!";
+      input.value = newId;
+      document.getElementById("veloraHandle").textContent = `@${newId}`;
+      btn.disabled = true;
+    } catch (err) {
+      console.error(err);
+      status.textContent = "Failed to update Velora ID.";
+    }
+  };
 }
 
 /* -------------------------
