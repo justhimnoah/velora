@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>My Account | Orbit</title>
+  <title>My Account • Velora</title>
 
   <link rel="stylesheet" href="css/style.css" />
 
@@ -83,7 +83,7 @@
     }
 
     .display-name { font-size: 18px; font-weight: 600; }
-    .orbit-handle { opacity: 0.7; font-size: 14px; }
+    .velora-handle { opacity: 0.7; font-size: 14px; }
 
     .profile-meta {
       margin-bottom: 18px;
@@ -418,7 +418,9 @@
 
 <header>
   <nav class="nav">
-    <div class="logo">ORBIT</div>
+    <a href="/" id="logoLink" class="logo">
+      <img id="logoImg" alt="Velora" />
+    </a>
     <div class="nav-links" id="navLinks"></div>
   </nav>
 </header>
@@ -446,8 +448,8 @@
       <div class="profile-header">
         <div class="avatar" id="profileAvatar">O</div>
         <div>
-          <div class="display-name" id="displayNameText">Orbit User</div>
-          <div class="orbit-handle" id="orbitHandle">@orbituser</div>
+          <div class="display-name" id="displayNameText">Velora User</div>
+          <div class="velora-handle" id="veloraHandle">@velorauser</div>
         </div>
       </div>
 
@@ -463,11 +465,11 @@
       </div>
 
       <div class="form-group">
-        <label>Orbit ID</label>
-        <input type="text" id="orbitIdInput" disabled />
-        <div class="hint" id="orbitIdStatus"></div>
-        <button class="primary-btn" id="changeOrbitIdBtn" disabled>
-          Change Orbit ID
+        <label>Velora ID</label>
+        <input type="text" id="veloraIdInput" disabled />
+        <div class="hint" id="veloraIdStatus"></div>
+        <button class="primary-btn" id="changeVeloraIdBtn" disabled>
+          Change Velora ID
         </button>
       </div>
     </div>

@@ -2,33 +2,320 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Orbit — The Console, Reimagined</title>
+  <title>Velora • Redefining Play</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="css/style.css">
+
+  <link rel="stylesheet" href="css/style.css" />
+
+  <!-- =========================
+       INDEX-ONLY STYLES
+       (Scoped, non-destructive)
+  ========================== -->
+  <style>
+    /* HERO */
+    .hero {
+      padding: 140px 24px 120px;
+      max-width: 1000px;
+      margin: auto;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 56px;
+      line-height: 1.05;
+      margin-bottom: 24px;
+      letter-spacing: -0.6px;
+    }
+
+    .hero p {
+      font-size: 19px;
+      opacity: 0.78;
+      max-width: 720px;
+      margin: 0 auto 42px;
+    }
+
+    .hero-actions {
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    /* HERO STATS */
+    .hero-stats {
+      margin-top: 70px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 28px;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero-stat {
+      padding: 26px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.14);
+      backdrop-filter: blur(14px);
+    }
+
+    .hero-stat h3 {
+      font-size: 28px;
+      margin-bottom: 6px;
+      color: #4da3ff;
+    }
+
+    .hero-stat p {
+      font-size: 14px;
+      opacity: 0.75;
+    }
+
+    /* FEATURES */
+    .features {
+      max-width: 1100px;
+      margin: 140px auto;
+      padding: 0 24px;
+    }
+
+    .features h2 {
+      font-size: 38px;
+      margin-bottom: 16px;
+    }
+
+    .features p {
+      opacity: 0.7;
+      margin-bottom: 52px;
+      max-width: 600px;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 32px;
+    }
+
+    .feature-card {
+      padding: 30px;
+      border-radius: 24px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.14);
+      backdrop-filter: blur(16px);
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 26px 70px rgba(0,0,0,0.45);
+    }
+
+    .feature-card h3 {
+      margin-bottom: 12px;
+      font-size: 22px;
+    }
+
+    .feature-card p {
+      font-size: 15px;
+      opacity: 0.75;
+      line-height: 1.5;
+    }
+
+    /* TIERS */
+    .tiers {
+      max-width: 1200px;
+      margin: 0 auto 160px;
+      padding: 0 24px;
+    }
+
+    .tiers h2 {
+      font-size: 38px;
+      margin-bottom: 46px;
+      text-align: center;
+    }
+
+    .tier-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 32px;
+    }
+
+    .tier {
+      padding: 34px;
+      border-radius: 26px;
+      background: linear-gradient(
+        180deg,
+        rgba(255,255,255,0.09),
+        rgba(255,255,255,0.04)
+      );
+      border: 1px solid rgba(255,255,255,0.18);
+      backdrop-filter: blur(18px);
+    }
+
+    .tier h3 {
+      font-size: 24px;
+      margin-bottom: 14px;
+    }
+
+    .tier ul {
+      list-style: none;
+      padding: 0;
+      margin: 26px 0 34px;
+    }
+
+    .tier li {
+      margin-bottom: 12px;
+      font-size: 14px;
+      opacity: 0.8;
+    }
+
+    /* FINAL CTA */
+    .final-cta {
+      padding: 160px 24px;
+      text-align: center;
+      background:
+        radial-gradient(circle at center, rgba(79,140,255,0.28), transparent 60%);
+    }
+
+    .final-cta h2 {
+      font-size: 44px;
+      margin-bottom: 18px;
+    }
+
+    .final-cta p {
+      font-size: 18px;
+      opacity: 0.75;
+      margin-bottom: 40px;
+    }
+  </style>
 </head>
+
 <body>
 
+<!-- =========================
+     HEADER
+========================== -->
 <header>
-  <nav class="nav">
-    <div class="logo">ORBIT</div>
-    <div class="nav-links" id="navLinks"></div>
-  </nav>
+  <div class="nav">
+    <a href="/" class="logo">
+      <img id="logoImg" alt="Velora" />
+    </a>
+    <nav class="nav-links" id="navLinks"></nav>
+  </div>
 </header>
 
-<main>
-  <h1>The Console, Reimagined</h1>
-  <p class="lead">
-    One ecosystem. Three performance tiers. 
+<!-- =========================
+     HERO
+========================== -->
+<section class="hero">
+  <h1>Redefining<br>What a Console Can Be</h1>
+
+  <p>
+    Velora is a modular, performance-driven gaming platform designed for
+    longevity, freedom, and real control — not forced upgrades.
   </p>
 
-  <a class="btn" id="buildBtn">
-    Build Your Console
-  </a>
-</main>
+  <div class="hero-actions">
+    <a href="./configurator.html" class="btn">Build Your Console</a>
+    <a href="./games/games.html" class="btn">Explore Games</a>
+  </div>
 
-<!-- 👇 THESE TWO ARE REQUIRED -->
-<script type="module" src="./js/index.js"></script>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <h3>Modular</h3>
+      <p>Upgrade parts, not your entire console</p>
+    </div>
+
+    <div class="hero-stat">
+      <h3>Future-Ready</h3>
+      <p>Designed to scale with hardware advances</p>
+    </div>
+
+    <div class="hero-stat">
+      <h3>No Lock-In</h3>
+      <p>Your hardware, your decisions</p>
+    </div>
+  </div>
+</section>
+
+<!-- =========================
+     FEATURES
+========================== -->
+<section class="features">
+  <h2>Built Different</h2>
+  <p>
+    Traditional consoles are closed systems. Velora is built to evolve.
+  </p>
+
+  <div class="feature-grid">
+    <div class="feature-card">
+      <h3>Modular Architecture</h3>
+      <p>
+        Swap and upgrade individual components instead of replacing
+        an entire console generation.
+      </p>
+    </div>
+
+    <div class="feature-card">
+      <h3>Performance Stability</h3>
+      <p>
+        Engineered for consistent frame rates, efficient cooling,
+        and long-term reliability.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- =========================
+     TIERS
+========================== -->
+<section class="tiers">
+  <h2>Choose Your Power</h2>
+
+  <div class="tier-grid">
+    <div class="tier">
+      <h3>Velora Base</h3>
+      <ul>
+        <li>1080p Optimized Performance</li>
+        <li>Core Modular Foundation</li>
+        <li>Essential Gaming Experience</li>
+      </ul>
+      <a href="./configurator.html" class="btn">Start with Base</a>
+    </div>
+
+    <div class="tier">
+      <h3>Velora Core</h3>
+      <ul>
+        <li>1440p High Frame Rate Gaming</li>
+        <li>Enhanced Cooling System</li>
+        <li>Expanded Customization</li>
+      </ul>
+      <a href="./configurator.html" class="btn">Build Core</a>
+    </div>
+
+    <div class="tier">
+      <h3>Velora Pro</h3>
+      <ul>
+        <li>4K-Ready Architecture</li>
+        <li>Maximum Performance Headroom</li>
+        <li>Designed for the Long Term</li>
+      </ul>
+      <a href="./configurator.html" class="btn">Go Pro</a>
+    </div>
+  </div>
+</section>
+
+<!-- =========================
+     FINAL CTA
+========================== -->
+<section class="final-cta">
+  <h2>Your Console. Your Rules.</h2>
+  <p>
+    Velora isn’t built for one generation.<br>
+    It’s built for the future of gaming.
+  </p>
+  <a href="configurator.html" class="btn">Create Your Console</a>
+</section>
+
 <script type="module" src="./js/header.js"></script>
-
 </body>
 </html>

@@ -179,7 +179,7 @@ document.addEventListener("DOMContentLoaded", () => {
     currentUser = user;
 
     loadProfile(user);
-    loadOrbitId(user);
+    loadveloraId(user);
     loadSecurity(user);
     await loadPrivacyFromFirestore();
     await loadConsoleFromFirestore();
@@ -219,7 +219,7 @@ function setupSidebar() {
 async function loadProfile(user) {
   // 🔹 Auth-based
   document.getElementById("displayNameText").textContent =
-    user.displayName || "Orbit User";
+    user.displayName || "Velora User";
 
   document.getElementById("emailText").textContent = user.email;
   document.getElementById("memberSince").textContent =
@@ -228,9 +228,9 @@ async function loadProfile(user) {
   // 🔹 Firestore-based
   const userData = await getUserDoc(user.uid);
 
-  // ✅ Orbit Handle (FIXED)
-  document.getElementById("orbitHandle").textContent =
-    userData.orbitId ? `@${userData.orbitId}` : "@orbituser";
+  // ✅ Velora Handle (FIXED)
+  document.getElementById("veloraHandle").textContent =
+    userData.veloraId ? `@${userData.veloraId}` : "@veloruser";
 
   // 🔹 Avatar
   const avatarEl = document.getElementById("profileAvatar");
@@ -261,30 +261,52 @@ async function loadProfile(user) {
 }
 
 /* -------------------------
-   ORBIT ID (UI ONLY)
+   Velora ID (UI ONLY)
 ------------------------- */
-function loadOrbitId(user) {
-  const input = document.getElementById("orbitIdInput");
-  const status = document.getElementById("orbitIdStatus");
-  const btn = document.getElementById("changeOrbitIdBtn");
+async function loadveloraId(user) {
+  const input = document.getElementById("veloraIdInput");
+  const status = document.getElementById("veloraIdStatus");
+  const btn = document.getElementById("changeVeloraIdBtn");
 
-  input.value = "orbitadmin";
+  // UI defaults
   input.disabled = true;
+  btn.disabled = true;
 
+  const userSnap = await getDoc(doc(db, "users", user.uid));
+  if (!userSnap.exists()) {
+    status.textContent = "Unable to load Velora ID data.";
+    return;
+  }
+
+  const userData = userSnap.data();
+
+  // 🔹 Show current Velora ID
+  input.value = userData.veloraId || "";
+
+  // 🔹 Cooldown logic (7 days)
   const cooldownMs = 7 * 24 * 60 * 60 * 1000;
-  const createdAt = new Date(user.metadata.creationTime).getTime();
-  const remaining = createdAt + cooldownMs - Date.now();
+
+  const lastChangedTs = userData.veloraLastChanged;
+  if (!lastChangedTs) {
+    // Safety fallback (old users)
+    status.textContent = "You can change your Velora ID now.";
+    btn.disabled = false;
+    return;
+  }
+
+  const lastChanged = lastChangedTs.toDate().getTime();
+  const remaining = lastChanged + cooldownMs - Date.now();
 
   if (remaining <= 0) {
-    status.textContent = "You can change your Orbit ID now.";
+    status.textContent = "You can change your Velora ID now.";
     btn.disabled = false;
   } else {
     const remainingText = formatRemaining(remaining);
 
     status.textContent =
       remainingText === "soon"
-        ? "You can change your Orbit ID soon."
-        : `You can change your Orbit ID in ${remainingText}.`;
+        ? "You can change your Velora ID soon."
+        : `You can change your Velora ID in ${remainingText}.`;
 
     btn.disabled = true;
   }

@@ -1,13 +1,28 @@
 import { auth } from "./firebase.js";
-import { onAuthStateChanged, signOut } from
-  "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import {
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const navLinks = document.getElementById("navLinks");
+const logoLink = document.getElementById("logoLink");
+const logoImg = document.getElementById("logoImg");
 
 // 🔑 Base path resolver (local + GitHub Pages safe)
 const BASE_PATH = location.hostname.includes("github.io")
-  ? "/orbit"
+  ? "/velora"
   : "";
+
+/* =========================
+   LOGO SETUP
+========================= */
+if (logoImg) {
+  logoImg.src = `${BASE_PATH}/assets/velora.png`;
+}
+
+if (logoLink) {
+  logoLink.href = `${BASE_PATH}/`;
+}
 
 /**
  * Normalizes paths so:
@@ -17,17 +32,15 @@ const BASE_PATH = location.hostname.includes("github.io")
  *
  * Final output:
  *  - Local: /games/games.html
- *  - GitHub: /orbit/games/games.html
+ *  - GitHub: /velora/games/games.html
  */
 function link(path, text, id) {
   let cleanPath = path;
 
-  // remove leading "./"
   if (cleanPath.startsWith("./")) {
     cleanPath = cleanPath.slice(1);
   }
 
-  // ensure leading "/"
   if (!cleanPath.startsWith("/")) {
     cleanPath = "/" + cleanPath;
   }
@@ -35,6 +48,9 @@ function link(path, text, id) {
   return `<a href="${BASE_PATH}${cleanPath}" ${id ? `id="${id}"` : ""}>${text}</a>`;
 }
 
+/* =========================
+   NAV LOGIC
+========================= */
 onAuthStateChanged(auth, user => {
   if (!navLinks) return;
 

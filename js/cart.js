@@ -43,7 +43,7 @@ function renderCart(items, uid) {
         // DEFAULT: CONSOLE ITEM (your existing code)
         return `
           <div class="cart-card">
-            <h3>Orbit Console</h3>
+            <h3>Velora Console</h3>
 
             <p><strong>Tier:</strong> ${item.tier}</p>
             <p><strong>Storage:</strong> ${item.storage}</p>

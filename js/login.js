@@ -19,9 +19,9 @@ import {
 const title = document.getElementById("title");
 const subtitle = document.getElementById("subtitle");
 
-const orbitField = document.getElementById("orbitField");
-const orbitId = document.getElementById("orbitId");
-const orbitStatus = document.getElementById("orbitStatus");
+const veloraField = document.getElementById("veloraField");
+const veloraId = document.getElementById("veloraId");
+const veloraStatus = document.getElementById("veloraStatus");
 
 const email = document.getElementById("email");
 const confirmEmailField = document.getElementById("confirmEmailField");
@@ -42,7 +42,7 @@ const error = document.getElementById("error");
    STATE
 ===================== */
 let isRegister = false;
-let orbitAvailable = false;
+let veloraAvailable = false;
 let passwordStrongEnough = false;
 
 /* =====================
@@ -82,7 +82,7 @@ function updateButtonState() {
     password.value === confirmPassword.value;
 
   submitBtn.disabled = !(
-    orbitAvailable &&
+    veloraAvailable &&
     emailsMatch &&
     passwordStrongEnough &&
     passwordsMatch
@@ -205,28 +205,34 @@ confirmPassword.oninput = () => {
 };
 
 /* =====================
-   ORBIT ID CHECK
+   Velora ID CHECK
 ===================== */
-orbitId.oninput = async () => {
-  const val = orbitId.value.trim().toLowerCase();
-  orbitAvailable = false;
+veloraId.oninput = async () => {
+  const val = veloraId.value.trim().toLowerCase();
+  veloraAvailable = false;
 
   if (!/^[a-z0-9_]{4,16}$/.test(val)) {
-    orbitStatus.textContent = "Invalid Orbit ID";
-    orbitStatus.className = "bad";
+    veloraStatus.textContent = "Invalid Velora ID";
+    veloraStatus.className = "bad";
     updateButtonState();
     return;
   }
 
-  const snap = await getDoc(doc(db, "orbitIds", val));
+  try {
+    const snap = await getDoc(doc(db, "veloraIds", val));
 
-  if (snap.exists()) {
-    orbitStatus.textContent = "Orbit ID is taken";
-    orbitStatus.className = "bad";
-  } else {
-    orbitStatus.textContent = "Orbit ID is available ✔";
-    orbitStatus.className = "ok";
-    orbitAvailable = true;
+    if (snap.exists()) {
+      veloraStatus.textContent = "Velora ID is taken";
+      veloraStatus.className = "bad";
+    } else {
+      veloraStatus.textContent = "Velora ID is available ✔";
+      veloraStatus.className = "ok";
+      veloraAvailable = true;
+    }
+  } catch (err) {
+    console.error("Velora ID check failed:", err);
+    veloraStatus.textContent = "Unable to check Velora ID";
+    veloraStatus.className = "bad";
   }
 
   updateButtonState();
@@ -240,17 +246,17 @@ toggle.onclick = e => {
   isRegister = !isRegister;
 
   title.textContent = isRegister
-    ? "Create Orbit Account"
-    : "Sign in to Orbit";
+    ? "Create Velora Account"
+    : "Sign in to Velora";
 
   subtitle.textContent = isRegister
-    ? "Your identity across Orbit"
-    : "Access your Orbit console";
+    ? "Your identity across Velora"
+    : "Access your Velora console";
 
   submitBtn.textContent = isRegister ? "Register" : "Sign In";
   submitBtn.disabled = true;
 
-  orbitField.style.display = isRegister ? "block" : "none";
+  veloraField.style.display = isRegister ? "block" : "none";
   confirmEmailField.style.display = isRegister ? "block" : "none";
   confirmPasswordField.style.display = isRegister ? "block" : "none";
   passwordStatus.style.display = isRegister ? "block" : "none";
@@ -313,14 +319,14 @@ submitBtn.onclick = async () => {
 
     await setDoc(doc(db, "users", cred.user.uid), {
       email: email.value.trim(),
-      orbitId: orbitId.value.trim().toLowerCase(),
-      orbitLastChanged: serverTimestamp(),
+      veloraId: veloraId.value.trim().toLowerCase(),
+      veloraLastChanged: serverTimestamp(),
       createdAt: serverTimestamp(),
       emailVerified: false
     });
 
     await setDoc(
-      doc(db, "orbitIds", orbitId.value.trim().toLowerCase()),
+      doc(db, "veloraIds", veloraId.value.trim().toLowerCase()),
       { uid: cred.user.uid }
     );
 
@@ -366,7 +372,7 @@ function handleEnterSubmit(e) {
   password,
   confirmEmail,
   confirmPassword,
-  orbitId
+  veloraId
 ].forEach(input => {
   if (!input) return;
   input.addEventListener("keydown", handleEnterSubmit);

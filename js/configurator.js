@@ -1,5 +1,5 @@
 /* ======================================
-   ORBIT CONFIGURATOR — FIXED
+   Velora CONFIGURATOR — FIXED
 ====================================== */
 
 /* ---------- IMPORTS ---------- */

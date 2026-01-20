@@ -918,7 +918,7 @@ body {
   font-size: 20px;
 }
 
-.orbit-id {
+.velora-id {
   font-size: 12px;
   opacity: 0.7;
 }
@@ -1032,7 +1032,7 @@ body {
 }
 
 /* =========================
-   ORBIT AUTH — CLEAN UI
+   Velora AUTH — CLEAN UI
 ========================= */
 
 .auth-page {
@@ -1113,10 +1113,10 @@ body {
 }
 
 /* =========================
-   ORBIT AUTH — CONSOLE GRADE
+   Velora AUTH — CONSOLE GRADE
 ========================= */
 
-.orbit-auth-bg {
+.velora-auth-bg {
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -1125,7 +1125,7 @@ body {
     radial-gradient(circle at top, #142b5f, #020615);
 }
 
-.orbit-auth-card {
+.velora-auth-card {
   width: 440px;
   padding: 44px;
   border-radius: 26px;
@@ -1139,13 +1139,13 @@ body {
   box-shadow: 0 40px 120px rgba(0,0,0,0.65);
 }
 
-.orbit-auth-header h1 {
+.velora-auth-header h1 {
   font-size: 32px;
   font-weight: 800;
   margin-bottom: 6px;
 }
 
-.orbit-auth-header p {
+.velora-auth-header p {
   font-size: 15px;
   opacity: 0.75;
   margin-bottom: 32px;
@@ -1185,7 +1185,7 @@ body {
   margin-top: 4px;
 }
 
-.orbit-btn {
+.velora-btn {
   width: 100%;
   margin-top: 14px;
   padding: 14px;
@@ -1199,23 +1199,23 @@ body {
   box-shadow: 0 14px 40px rgba(47,91,255,0.45);
 }
 
-.orbit-btn:hover {
+.velora-btn:hover {
   transform: translateY(-2px);
 }
 
-.orbit-auth-links {
+.velora-auth-links {
   display: flex;
   justify-content: space-between;
   margin-top: 18px;
   font-size: 14px;
 }
 
-.orbit-auth-links a {
+.velora-auth-links a {
   color: #8bb1ff;
   text-decoration: none;
 }
 
-.orbit-auth-links a:hover {
+.velora-auth-links a:hover {
   color: white;
 }
 
@@ -1235,14 +1235,14 @@ small.bad {
 }
 
 /* =========================
-   ORBIT AUTH UI POLISH
+   Velora AUTH UI POLISH
 ========================= */
 
-.orbit-auth-card h1 {
+.velora-auth-card h1 {
   margin-bottom: 10px;
 }
 
-.orbit-auth-card p {
+.velora-auth-card p {
   margin-bottom: 28px;
   opacity: 0.85;
 }
@@ -1264,11 +1264,11 @@ small.bad {
   font-size: 13px;
 }
 
-.orbit-btn {
+.velora-btn {
   margin-top: 18px;
 }
 
-.orbit-auth-links {
+.velora-auth-links {
   margin-top: 22px;
 }
 
@@ -1313,4 +1313,15 @@ small.bad {
 .password-wrapper > input[type="text"] {
   padding-right: 40px;
   box-sizing: border-box;
+}
+
+.logo img {
+  height: 32px;
+  width: auto;
+  display: block;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
 }

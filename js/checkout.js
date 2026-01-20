@@ -33,7 +33,7 @@ onAuthStateChanged(auth, async user => {
 
     return `
       <div class="checkout-item">
-        <strong>Orbit Console</strong><br>
+        <strong>Velora Console</strong><br>
         Tier: ${item.tier}<br>
         Storage: ${item.storage}<br>
         <strong>${item.price}</strong>
