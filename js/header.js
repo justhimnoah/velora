@@ -24,7 +24,7 @@ if (logoImg) {
 }
 
 if (logoLink) {
-  logoLink.href = `${BASE_PATH}/`;
+  logoLink.href = `${BASE_PATH}/index.html`;
 }
 
 /**
