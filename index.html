@@ -211,10 +211,35 @@
     .split-visual {
       height: 320px;
       border-radius: 24px;
-      background: linear-gradient(135deg, #102d70, #020615);
+
+      background:
+        radial-gradient(circle at 70% 30%, rgba(77,163,255,0.25), transparent 60%),
+        linear-gradient(135deg, #102d70, #020615);
+
+      border: 1px solid rgba(255,255,255,0.12);
       box-shadow: 0 40px 100px rgba(0,0,0,0.6);
+
+      position: relative;
+      overflow: hidden;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
+    .split-visual::after {
+      content: "";
+      position: absolute;
+      width: 180%;
+      height: 180%;
+      background: radial-gradient(circle, rgba(77,163,255,0.12), transparent 60%);
+      animation: splitGlow 12s linear infinite;
+    }
+
+    @keyframes splitGlow {
+      from { transform: translate(-10%, -10%); }
+      to { transform: translate(-30%, -30%); }
+    }
     /* =========================
        FINAL CTA
     ========================== */
@@ -334,7 +359,11 @@
     </p>
   </div>
 
-  <div class="split-visual"></div>
+  <div class="split-visual">
+    <span style="opacity: 0.5; font-size: 16px;">
+      System Architecture Preview
+    </span>
+  </div>
 </section>
 
 <!-- FINAL CTA -->
