@@ -268,63 +268,60 @@ async function loadVeloraId(user) {
   const status = document.getElementById("veloraIdStatus");
   const btn = document.getElementById("changeVeloraIdBtn");
 
-  // Disable input/button by default
-  input.disabled = true;
-  btn.disabled = true;
+  // Fetch user data ONCE
+  const snap = await getDoc(doc(db, "users", user.uid));
 
-  // Fetch user's Firestore data
-  const userSnap = await getDoc(doc(db, "users", user.uid));
-  if (!userSnap.exists()) {
+  if (!snap.exists()) {
     status.textContent = "Unable to load Velora ID data.";
     return;
   }
 
-  const userData = userSnap.data();
-  const currentVeloraId = userData.veloraId || "";
-  const lastChangedTs = userData.veloraLastChanged;
+  const data = snap.data();
 
-  input.value = currentVeloraId;
+  const currentId = data.veloraId || "";
+  const lastChangedTs = data.veloraLastChanged;
 
-  // Set handle in UI
+  input.value = currentId;
+
   document.getElementById("veloraHandle").textContent =
-    currentVeloraId ? `@${currentVeloraId}` : "@veloruser";
+    currentId ? `@${currentId}` : "@velorauser";
 
-  // Cooldown logic: 7 days
+  // 🔥 COOLDOWN LOGIC
   const cooldownMs = 7 * 24 * 60 * 60 * 1000;
   const lastChanged = lastChangedTs?.toDate?.().getTime() || 0;
   const remaining = lastChanged + cooldownMs - Date.now();
 
-  if (remaining <= 0) {
-    status.textContent = "You can change your Velora ID now.";
-    btn.disabled = false;
-    input.disabled = false; // ✅ THIS FIXES IT
-  } else {
-    status.textContent =
-      `You can change your Velora ID in ${formatRemaining(remaining)}.`;
-    btn.disabled = true;
-    input.disabled = true; // (optional but cleaner)
-  }
+  const canChange = remaining <= 0;
 
-  // Change Velora ID
+  // ✅ SINGLE SOURCE OF TRUTH
+  input.disabled = !canChange;
+  btn.disabled = !canChange;
+
+  status.textContent = canChange
+    ? "You can change your Velora ID now."
+    : `You can change your Velora ID in ${formatRemaining(remaining)}.`;
+
+  // 🔥 BUTTON CLICK
   btn.onclick = async () => {
     const newId = input.value.trim().toLowerCase();
 
-    // Validation
     if (!newId.match(/^[a-z0-9_]{4,16}$/)) {
-      status.textContent = "ID must be 4–16 chars, lowercase letters, numbers, or underscore.";
+      status.textContent =
+        "ID must be 4–16 chars, lowercase letters, numbers, or underscore.";
       return;
     }
-    if (newId === currentVeloraId) return;
+
+    if (newId === currentId) return;
 
     try {
-      // Check if the ID already exists in Firestore
+      // Check uniqueness
       const idSnap = await getDoc(doc(db, "veloraIds", newId));
       if (idSnap.exists()) {
         status.textContent = "This Velora ID is already taken.";
         return;
       }
 
-      // Update user's Firestore document
+      // Update user
       await setDoc(
         doc(db, "users", user.uid),
         {
@@ -334,13 +331,16 @@ async function loadVeloraId(user) {
         { merge: true }
       );
 
-      // Register the new ID in the global collection
-      await setDoc(doc(db, "veloraIds", newId), { userId: user.uid });
+      // Register ID
+      await setDoc(doc(db, "veloraIds", newId), {
+        userId: user.uid
+      });
 
       status.textContent = "Velora ID updated successfully!";
-      input.value = newId;
-      document.getElementById("veloraHandle").textContent = `@${newId}`;
-      btn.disabled = true;
+
+      // 🔥 FORCE REFRESH STATE
+      loadVeloraId(user);
+
     } catch (err) {
       console.error(err);
       status.textContent = "Failed to update Velora ID.";
