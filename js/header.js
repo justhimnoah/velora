@@ -20,7 +20,6 @@ if (logoImg) {
   logoImg.onload = () => {
     logoImg.classList.remove("hidden");
   };
-  logoImg.src = `${BASE_PATH}/assets/velora.png`;
 }
 
 if (logoLink) {
