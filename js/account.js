@@ -297,10 +297,12 @@ async function loadVeloraId(user) {
   if (remaining <= 0) {
     status.textContent = "You can change your Velora ID now.";
     btn.disabled = false;
+    input.disabled = false; // ✅ THIS FIXES IT
   } else {
     status.textContent =
       `You can change your Velora ID in ${formatRemaining(remaining)}.`;
     btn.disabled = true;
+    input.disabled = true; // (optional but cleaner)
   }
 
   // Change Velora ID
