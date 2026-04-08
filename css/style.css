@@ -1326,10 +1326,6 @@ small.bad {
   align-items: center;
 }
 
-.logo-img.hidden {
-  opacity: 0;
-}
-
 .logo-img {
   height: 28px; /* or whatever you use */
   transition: opacity 0.25s ease;
