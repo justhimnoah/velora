@@ -14,6 +14,7 @@ import {
   doc,
   setDoc,
   getDoc,
+  deleteDoc,
   collection,
   getDocs,
   query,
@@ -303,49 +304,54 @@ async function loadVeloraId(user) {
 
   // 🔥 BUTTON CLICK
   btn.onclick = async () => {
-    const newId = input.value.trim().toLowerCase();
+  const newId = input.value.trim().toLowerCase();
 
-    if (!newId.match(/^[a-z0-9_]{4,16}$/)) {
-      status.textContent =
-        "ID must be 4–16 chars, lowercase letters, numbers, or underscore.";
+  if (!newId.match(/^[a-z0-9_]{4,16}$/)) {
+    status.textContent =
+      "ID must be 4–16 chars, lowercase letters, numbers, or underscore.";
+    return;
+  }
+
+  if (newId === currentId) return;
+
+  try {
+    // 🔍 Check if new ID exists
+    const newIdSnap = await getDoc(doc(db, "veloraIds", newId));
+    if (newIdSnap.exists()) {
+      status.textContent = "This Velora ID is already taken.";
       return;
     }
 
-    if (newId === currentId) return;
-
-    try {
-      // Check uniqueness
-      const idSnap = await getDoc(doc(db, "veloraIds", newId));
-      if (idSnap.exists()) {
-        status.textContent = "This Velora ID is already taken.";
-        return;
-      }
-
-      // Update user
-      await setDoc(
-        doc(db, "users", user.uid),
-        {
-          veloraId: newId,
-          veloraLastChanged: serverTimestamp()
-        },
-        { merge: true }
-      );
-
-      // Register ID
-      await setDoc(doc(db, "veloraIds", newId), {
-        userId: user.uid
-      });
-
-      status.textContent = "Velora ID updated successfully!";
-
-      // 🔥 FORCE REFRESH STATE
-      loadVeloraId(user);
-
-    } catch (err) {
-      console.error(err);
-      status.textContent = "Failed to update Velora ID.";
+    // 🔥 DELETE OLD ID (THIS IS THE FIX)
+    if (currentId) {
+      await deleteDoc(doc(db, "veloraIds", currentId));
     }
-  };
+
+    // ✅ SET NEW ID
+    await setDoc(doc(db, "veloraIds", newId), {
+      userId: user.uid
+    });
+
+    // ✅ UPDATE USER
+    await setDoc(
+      doc(db, "users", user.uid),
+      {
+        veloraId: newId,
+        veloraLastChanged: serverTimestamp()
+      },
+      { merge: true }
+    );
+
+    status.textContent = "Velora ID updated successfully!";
+
+    // 🔄 Reload state
+    loadVeloraId(user);
+
+  } catch (err) {
+    console.error(err);
+    status.textContent = "Failed to update Velora ID.";
+  }
+};
 }
 
 /* -------------------------
