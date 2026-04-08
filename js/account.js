@@ -179,7 +179,7 @@ document.addEventListener("DOMContentLoaded", () => {
     currentUser = user;
 
     loadProfile(user);
-    loadveloraId(user);
+    loadVeloraId(user);
     loadSecurity(user);
     await loadPrivacyFromFirestore();
     await loadConsoleFromFirestore();
