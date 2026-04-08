@@ -13,10 +13,17 @@
        GLOBAL POLISH
     ========================== */
     body {
+      -webkit-user-select: none;
+      user-select: none;
+
       background:
         radial-gradient(circle at 20% 0%, rgba(60,120,255,0.15), transparent 40%),
         radial-gradient(circle at 80% 10%, rgba(0,150,255,0.12), transparent 40%),
         #020615;
+    }
+
+    input, textarea {
+      user-select: text;
     }
 
     section {
@@ -25,7 +32,7 @@
     }
 
     /* =========================
-       HERO (NEXT LEVEL)
+       HERO (UPGRADED)
     ========================== */
     .hero {
       padding: 140px 24px 100px;
@@ -36,12 +43,10 @@
 
     .hero h1 {
       font-size: 64px;
-      line-height: 1.05;
+      line-height: 1.15;
       margin-bottom: 24px;
-      letter-spacing: -1px;
-      background: linear-gradient(180deg, #ffffff, #9db8ff);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+      text-shadow: 0 10px 40px rgba(77,163,255,0.25);
     }
 
     .hero p {
@@ -59,25 +64,54 @@
       margin-bottom: 70px;
     }
 
-    /* FAKE CONSOLE VISUAL */
-    .console-preview {
-      width: 420px;
-      height: 260px;
+    /* 🔥 HERO VISUAL (FIXED EMPTY BOX) */
+    .hero-visual {
       margin: 0 auto;
-      border-radius: 24px;
-      background: linear-gradient(145deg, #0f2a6b, #050b18);
-      box-shadow:
-        0 40px 120px rgba(0,0,0,0.7),
-        inset 0 0 40px rgba(80,140,255,0.15);
+      width: 100%;
+      max-width: 780px;
+      height: 360px;
+      border-radius: 28px;
+
+      background:
+        radial-gradient(circle at 30% 30%, rgba(77,163,255,0.25), transparent 60%),
+        linear-gradient(
+          180deg,
+          rgba(255,255,255,0.08),
+          rgba(255,255,255,0.03)
+        );
+
+      border: 1px solid rgba(255,255,255,0.15);
+      backdrop-filter: blur(20px);
+
+      box-shadow: 0 40px 120px rgba(0,0,0,0.6);
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
       position: relative;
       overflow: hidden;
     }
 
-    .console-preview::after {
+    .hero-visual::after {
       content: "";
       position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at center, rgba(77,163,255,0.2), transparent 70%);
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(77,163,255,0.15), transparent 60%);
+      animation: floatGlow 10s linear infinite;
+    }
+
+    @keyframes floatGlow {
+      from { transform: translate(-20%, -20%); }
+      to { transform: translate(-40%, -40%); }
+    }
+
+    .hero-visual span {
+      position: relative;
+      z-index: 2;
+      opacity: 0.5;
+      font-size: 18px;
     }
 
     /* =========================
@@ -109,7 +143,7 @@
     }
 
     /* =========================
-       FEATURE SECTION (UPGRADED)
+       FEATURES
     ========================== */
     .features {
       max-width: 1200px;
@@ -151,18 +185,8 @@
       border-color: rgba(100,160,255,0.6);
     }
 
-    .feature-card h3 {
-      font-size: 22px;
-      margin-bottom: 12px;
-    }
-
-    .feature-card p {
-      opacity: 0.75;
-      line-height: 1.5;
-    }
-
     /* =========================
-       SPLIT SECTION (PREMIUM FEEL)
+       SPLIT SECTION
     ========================== */
     .split {
       display: grid;
@@ -192,7 +216,7 @@
     }
 
     /* =========================
-       FINAL CTA (STRONG)
+       FINAL CTA
     ========================== */
     .final-cta {
       padding: 160px 24px;
@@ -223,10 +247,6 @@
       .split {
         grid-template-columns: 1fr;
       }
-
-      .console-preview {
-        width: 100%;
-      }
     }
   </style>
 </head>
@@ -236,7 +256,7 @@
 <header>
   <div class="nav">
     <a href="./index.html" id="logoLink" class="logo">
-      <img src="assets/velora.png" id="logoImg" class="logo-img hidden" />
+      <img src="assets/velora.png" id="logoImg" class="logo-img" />
     </a>
     <nav class="nav-links" id="navLinks"></nav>
   </div>
@@ -256,7 +276,9 @@
     <a href="./games/games.html" class="btn">Explore Games</a>
   </div>
 
-  <div class="console-preview"></div>
+  <div class="hero-visual">
+    <span>Velora Console Preview</span>
+  </div>
 
   <div class="hero-stats">
     <div class="hero-stat">
@@ -301,7 +323,7 @@
   </div>
 </section>
 
-<!-- SPLIT SECTION -->
+<!-- SPLIT -->
 <section class="split">
   <div>
     <h2>Not Just a Console</h2>
