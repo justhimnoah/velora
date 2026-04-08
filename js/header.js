@@ -17,13 +17,7 @@ const BASE_PATH = location.hostname.includes("github.io")
    LOGO SETUP
 ========================= */
 if (logoImg) {
-  logoImg.onload = () => {
-    logoImg.classList.remove("hidden");
-  };
-}
-
-if (logoLink) {
-  logoLink.href = `${BASE_PATH}/index.html`;
+  logoImg.src = `${BASE_PATH}/assets/velora.png`;
 }
 
 /**
