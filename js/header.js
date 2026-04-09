@@ -20,6 +20,10 @@ if (logoImg) {
   logoImg.src = `${BASE_PATH}/assets/velora.png`;
 }
 
+if (logoLink) {
+  logoLink.href = `${BASE_PATH}/`;
+}
+
 /**
  * Normalizes paths so:
  * "./games/games.html"  -> /games/games.html
