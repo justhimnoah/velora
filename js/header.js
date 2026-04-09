@@ -24,6 +24,54 @@ if (logoLink) {
   logoLink.href = `${BASE_PATH}/`;
 }
 
+// =========================
+// MOBILE BLOCK (GLOBAL)
+// =========================
+function isMobile() {
+  return /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
+}
+
+if (isMobile()) {
+  document.body.innerHTML = `
+    <div style="
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, #0b1c3f, #020615);
+      color: white;
+      font-family: system-ui, sans-serif;
+      text-align: center;
+      padding: 20px;
+    ">
+      <div style="
+        max-width: 420px;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 20px;
+        padding: 40px;
+        backdrop-filter: blur(16px);
+        box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+      ">
+        <h1 style="font-size: 28px; margin-bottom: 14px;">
+          Desktop Required
+        </h1>
+        <p style="opacity: 0.75; margin-bottom: 24px;">
+          Continue on a desktop device to access Velora.
+        </p>
+        <div style="
+          font-size: 14px;
+          opacity: 0.5;
+        ">
+          Mobile support coming soon.
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+if (isMobile()) throw new Error("Mobile blocked");
+
 /**
  * Normalizes paths so:
  * "./games/games.html"  -> /games/games.html
