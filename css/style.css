@@ -2790,3 +2790,68 @@ img {
     height: 220px;
   }
 }
+
+/* =========================
+   MOBILE FIX (CRITICAL)
+========================= */
+@media (max-width: 768px) {
+
+  /* NAVBAR */
+  .nav {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .nav-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .nav-links a {
+    margin: 0;
+    font-size: 13px;
+  }
+
+  /* CONFIGURATOR */
+  .configurator-2 {
+    flex-direction: column;
+  }
+
+  .config-sidebar {
+    width: auto;
+    margin: 16px;
+  }
+
+  .config-main {
+    padding: 30px 20px;
+  }
+
+  /* HERO */
+  .hero h1 {
+    font-size: 28px;
+  }
+
+  /* CART */
+  .cart-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .cart-summary {
+    position: static;
+  }
+
+  /* ACCOUNT */
+  .account-page {
+    flex-direction: column;
+  }
+
+  .account-sidebar {
+    width: 100%;
+  }
+
+  .account-content {
+    padding: 20px;
+  }
+}
