@@ -1,12 +1,13 @@
-import { games } from "./games-data.js";
+import { supabase } from "../js/supabase.js";
 
 const grid = document.getElementById("gamesGrid");
 const searchInput = document.getElementById("searchInput");
 
+let games = [];
+
 /* =========================
    RENDER
 ========================= */
-
 function renderGames(list) {
   grid.innerHTML = "";
 
@@ -24,56 +25,54 @@ function renderGames(list) {
     };
 
     let badgeHTML = "";
-
     if (game.status === "Coming Soon") {
       badgeHTML = `<div class="status-badge coming">Coming Soon</div>`;
     }
-
     if (game.status === "Released") {
       badgeHTML = `<div class="status-badge released">Released</div>`;
     }
 
     card.innerHTML = `
       ${badgeHTML}
-
-      <div
-        class="game-image"
-        style="background:url('${game.cover}') center/cover"
-      ></div>
-
+      <div class="game-image" style="background:url('${game.cover}') center/cover"></div>
       <div class="game-content">
         <h3>${game.title}</h3>
         <p class="game-desc">${game.description}</p>
-        <p class="game-price">${game.price}</p>
-
+        <p class="game-price">₹${game.price}</p>
         <div class="game-tags">
-          ${(game.tags || []).map(tag =>
-            `<span class="tag">${tag}</span>`
-          ).join("")}
+          ${(game.tags || []).map(tag => `<span class="tag">${tag}</span>`).join("")}
         </div>
       </div>
     `;
 
-        grid.appendChild(card);
-      });
-    }
+    grid.appendChild(card);
+  });
+}
 
 /* =========================
-   SEARCH ONLY
+   SEARCH
 ========================= */
-
 searchInput.addEventListener("input", () => {
   const value = searchInput.value.toLowerCase();
-
-  renderGames(
-    games.filter(game =>
-      game.title.toLowerCase().includes(value)
-    )
-  );
+  renderGames(games.filter(game => game.title.toLowerCase().includes(value)));
 });
 
 /* =========================
    INIT
 ========================= */
+async function loadGames() {
+  const { data, error } = await supabase
+    .from("games")
+    .select("*")
+    .order("created_at", { ascending: false });
 
-renderGames(games);
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  games = data;
+  renderGames(games);
+}
+
+loadGames();
