@@ -62,7 +62,7 @@ function updateButtonState() {
 }
 
 /* =====================
-   Velora ID CHECK (Supabase)
+   Velora ID CHECK
 ===================== */
 veloraId.oninput = async () => {
   const val = veloraId.value.trim().toLowerCase();
@@ -75,8 +75,8 @@ veloraId.oninput = async () => {
     return;
   }
 
-  const { data, error: idError } = await supabase
-    .from("veloraids") // ✅ lowercase table name
+  const { data } = await supabase
+    .from("veloraids")
     .select("uid")
     .eq("id", val)
     .maybeSingle();
@@ -98,7 +98,6 @@ veloraId.oninput = async () => {
 ===================== */
 confirmEmail.oninput = () => {
   if (!isRegister) return;
-
   confirmEmailField.querySelector("small")?.remove();
 
   if (email.value && email.value === confirmEmail.value) {
@@ -112,7 +111,6 @@ confirmEmail.oninput = () => {
     s.className = "bad";
     confirmEmailField.appendChild(s);
   }
-
   updateButtonState();
 };
 
@@ -124,7 +122,6 @@ password.oninput = () => {
     updateButtonState();
     return;
   }
-
   if (isPasswordStrong(password.value)) {
     passwordStatus.textContent = "Password is strong ✔";
     passwordStatus.className = "ok";
@@ -134,7 +131,6 @@ password.oninput = () => {
     passwordStatus.className = "bad";
     passwordStrongEnough = false;
   }
-
   updateButtonState();
 };
 
@@ -143,7 +139,6 @@ password.oninput = () => {
 ===================== */
 confirmPassword.oninput = () => {
   if (!isRegister) return;
-
   confirmPasswordField.querySelector("small")?.remove();
 
   if (password.value && password.value === confirmPassword.value) {
@@ -157,7 +152,6 @@ confirmPassword.oninput = () => {
     s.className = "bad";
     confirmPasswordField.appendChild(s);
   }
-
   updateButtonState();
 };
 
@@ -198,6 +192,7 @@ resetPassword.onclick = async e => {
    SUBMIT
 ===================== */
 submitBtn.onclick = async () => {
+  submitBtn.disabled = true; // prevent double clicks
   error.textContent = "";
 
   try {
@@ -207,12 +202,11 @@ submitBtn.onclick = async () => {
         email: email.value.trim(),
         password: password.value
       });
-
       if (loginError) {
         showError(loginError.message);
+        submitBtn.disabled = false;
         return;
       }
-
       window.location.href = "index.html";
       return;
     }
@@ -223,28 +217,34 @@ submitBtn.onclick = async () => {
       password: password.value
     });
 
+    console.log("Signup response:", data, signupError);
+
     if (signupError) {
       showError(signupError.message);
+      submitBtn.disabled = false;
       return;
     }
 
-    // Store Velora ID in your custom tables
-    await supabase.from("users").insert({
-      email: email.value.trim(),
-      veloraId: veloraId.value.trim().toLowerCase(),
-      created_at: new Date()
-    });
+    if (data.user) {
+      // Store Velora ID in your custom tables
+      await supabase.from("users").insert({
+        uid: data.user.id,
+        email: email.value.trim(),
+        veloraid: veloraId.value.trim().toLowerCase(),
+        created_at: new Date()
+      });
 
-    await supabase.from("roles").insert({
-      uid: data.user.id,
-      role: "user",
-      created_at: new Date()
-    });
+      await supabase.from("roles").insert({
+        uid: data.user.id,
+        role: "user",
+        created_at: new Date()
+      });
 
-    await supabase.from("veloraids").insert({
-      id: veloraId.value.trim().toLowerCase(),
-      uid: data.user.id
-    });
+      await supabase.from("veloraids").insert({
+        id: veloraId.value.trim().toLowerCase(),
+        uid: data.user.id
+      });
+    }
 
     showSuccess("Verification email sent. Please verify before logging in.");
     isRegister = false;
@@ -252,5 +252,7 @@ submitBtn.onclick = async () => {
   } catch (e) {
     showError("Something went wrong");
     console.error(e);
+  } finally {
+    submitBtn.disabled = false;
   }
 };
