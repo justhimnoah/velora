@@ -233,7 +233,7 @@ async function loadProfile(user) {
     await supabase.from("users")
     .update({ displayName: input.value.trim() })
     .eq("uid", currentUser.id);
-    loadProfile(auth.currentUser);
+    loadProfile(currentUser);
   };
 
   // 🔹 Profile picture grid
@@ -397,7 +397,7 @@ async function savePrivacy() {
     privacy[key] = mapValue(valueText);
   });
 
-  privacy.updatedAt = serverTimestamp();
+  privacy.updatedAt = new Date();
 
   await supabase.from("users")
     .update({ privacy })
@@ -411,13 +411,16 @@ async function savePrivacy() {
   }, 2000);
 }
 
-async function loadPrivacyFromFirestore() {
-  const snap = await getDoc(doc(db, "users", currentUser.uid));
-  if (!snap.exists()) return;
+async function loadPrivacyFromSupabase() {
+  const { data: userRow, error } = await supabase
+    .from("users")
+    .select("privacy")
+    .eq("uid", currentUser.id)
+    .maybeSingle();
 
-  const privacy = snap.data().privacy;
-  if (!privacy) return;
+  if (error || !userRow?.privacy) return;
 
+  const privacy = userRow.privacy;
   const mapText = v =>
     v === "everyone" ? "Everyone" :
     v === "friends" ? "Friends" :
@@ -463,24 +466,26 @@ async function saveConsoleSettings() {
     consoleSettings[key] = value;
   });
 
-  consoleSettings.updatedAt = serverTimestamp();
+  consoleSettings.updatedAt = new Date();
 
-  await setDoc(
-    doc(db, "users", currentUser.uid),
-    { consoleSettings },
-    { merge: true }
-  );
+  await supabase.from("users")
+    .update({ consoleSettings })
+    .eq("uid", currentUser.id);
 
   saveStatus.classList.add("visible");
   setTimeout(() => saveStatus.classList.remove("visible"), 2000);
 }
 
-async function loadConsoleFromFirestore() {
-  const snap = await getDoc(doc(db, "users", currentUser.uid));
-  if (!snap.exists()) return;
+async function loadConsoleFromSupabase() {
+  const { data: userRow, error } = await supabase
+    .from("users")
+    .select("consoleSettings")
+    .eq("uid", currentUser.id)
+    .maybeSingle();
 
-  const settings = snap.data().consoleSettings;
-  if (!settings) return;
+  if (error || !userRow?.consoleSettings) return;
+
+  const settings = userRow.consoleSettings;
 
   document.querySelectorAll("#console .privacy-row").forEach(row => {
     const key = row.dataset.key;
