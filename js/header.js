@@ -1,8 +1,4 @@
-import { auth } from "./firebase.js";
-import {
-  onAuthStateChanged,
-  signOut
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { supabase } from "./supabase.js";
 
 const navLinks = document.getElementById("navLinks");
 const logoLink = document.getElementById("logoLink");
@@ -99,7 +95,7 @@ function link(path, text, id) {
 /* =========================
    NAV LOGIC
 ========================= */
-onAuthStateChanged(auth, user => {
+supabase.auth.onAuthStateChange((_event, session) => {
   if (!navLinks) return;
 
   navLinks.innerHTML = "";
@@ -107,22 +103,18 @@ onAuthStateChanged(auth, user => {
   // HOME
   navLinks.insertAdjacentHTML("beforeend", link("/", "Home"));
 
-  if (user) {
+  if (session?.user) {
     // LOGGED IN
     navLinks.insertAdjacentHTML("beforeend", link("./configurator.html", "Configurator"));
     navLinks.insertAdjacentHTML("beforeend", link("./games/games.html", "Games"));
     navLinks.insertAdjacentHTML("beforeend", link("./cart.html", "Cart"));
     navLinks.insertAdjacentHTML("beforeend", link("./account.html", "My Account"));
-    navLinks.insertAdjacentHTML(
-      "beforeend",
-      `<a href="#" id="logoutBtn">Logout</a>`
-    );
+    navLinks.insertAdjacentHTML("beforeend", `<a href="#" id="logoutBtn">Logout</a>`);
 
-    document.getElementById("logoutBtn")?.addEventListener("click", e => {
+    document.getElementById("logoutBtn")?.addEventListener("click", async e => {
       e.preventDefault();
-      signOut(auth).then(() => {
-        window.location.href = `${BASE_PATH}/`;
-      });
+      await supabase.auth.signOut();
+      window.location.href = `${BASE_PATH}/`;
     });
 
   } else {

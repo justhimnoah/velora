@@ -1,28 +1,4 @@
-import { auth } from "./firebase.js";
-import { db } from "./firebase.js";
-
-import {
-  onAuthStateChanged,
-  updateProfile,
-  updatePassword,
-  verifyBeforeUpdateEmail,
-  EmailAuthProvider,
-  reauthenticateWithCredential
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-import {
-  doc,
-  setDoc,
-  getDoc,
-  deleteDoc,
-  collection,
-  getDocs,
-  query,
-  where,         
-  orderBy,
-  addDoc,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { supabase } from "./supabase.js";
 
 /* -------------------------
    GLOBAL STATE
@@ -159,8 +135,11 @@ async function saveProfilePicture() {
 }
 
 async function getUserDoc(uid) {
-  const snap = await getDoc(doc(db, "users", uid));
-  return snap.exists() ? snap.data() : {};
+  const { data } = await supabase.from("users")
+    .select("*")
+    .eq("uid", uid)
+    .maybeSingle();
+  return data || {};
 }
 
 /* -------------------------
@@ -171,19 +150,17 @@ document.addEventListener("DOMContentLoaded", () => {
   setupPrivacyUI();
   setupConsoleUI();
   setupSupportUI();
-  onAuthStateChanged(auth, async user => {
-    if (!user) {
+  supabase.auth.onAuthStateChange(async (_event, session) => {
+    if (!session?.user) {
       window.location.href = "login.html";
       return;
     }
-
-    currentUser = user;
-
-    loadProfile(user);
-    loadVeloraId(user);
-    loadSecurity(user);
-    await loadPrivacyFromFirestore();
-    await loadConsoleFromFirestore();
+    currentUser = session.user;
+    loadProfile(session.user);
+    loadVeloraId(session.user);
+    loadSecurity(session.user);
+    await loadPrivacyFromSupabase();
+    await loadConsoleFromSupabase();
     await loadOrders();
     await loadTickets();
   });
@@ -253,7 +230,9 @@ async function loadProfile(user) {
 
   document.getElementById("saveDisplayName").onclick = async () => {
     if (!input.value.trim()) return;
-    await updateProfile(user, { displayName: input.value.trim() });
+    await supabase.from("users")
+    .update({ displayName: input.value.trim() })
+    .eq("uid", currentUser.id);
     loadProfile(auth.currentUser);
   };
 
@@ -322,25 +301,12 @@ async function loadVeloraId(user) {
       return;
     }
 
-    // 🔥 DELETE OLD ID (THIS IS THE FIX)
-    if (currentId) {
-      await deleteDoc(doc(db, "veloraIds", currentId));
-    }
-
-    // ✅ SET NEW ID
-    await setDoc(doc(db, "veloraIds", newId), {
-      userId: user.uid
-    });
-
-    // ✅ UPDATE USER
-    await setDoc(
-      doc(db, "users", user.uid),
-      {
-        veloraId: newId,
-        veloraLastChanged: serverTimestamp()
-      },
-      { merge: true }
-    );
+    await supabase.from("veloraids").delete().eq("id", currentId);
+    await supabase.from("veloraids").insert({ id: newId, uid: currentUser.id });
+    await supabase.from("users").update({
+      veloraid: newId,
+      veloraLastChanged: new Date()
+    }).eq("uid", currentUser.id);
 
     status.textContent = "Velora ID updated successfully!";
 
@@ -370,20 +336,14 @@ function loadSecurity(user) {
   emailBtn.onclick = async () => {
     clearInlineError(emailCard);
     const newEmail = emailInputs[1].value.trim();
-    if (!newEmail || newEmail === user.email) return;
+    if (!newEmail || newEmail === currentUser.email) return;
 
-    try {
-      const password = prompt("Enter your current password:");
-      if (!password) return;
-
-      const cred = EmailAuthProvider.credential(user.email, password);
-      await reauthenticateWithCredential(user, cred);
-      await verifyBeforeUpdateEmail(user, newEmail);
-
+    const { error } = await supabase.auth.updateUser({ email: newEmail });
+    if (error) {
+      showInlineError(emailCard, "Failed to update email.");
+    } else {
       emailBtn.textContent = "Verification sent";
       emailBtn.disabled = true;
-    } catch {
-      showInlineError(emailCard, "Failed to update email.");
     }
   };
 
@@ -439,11 +399,9 @@ async function savePrivacy() {
 
   privacy.updatedAt = serverTimestamp();
 
-  await setDoc(
-    doc(db, "users", currentUser.uid),
-    { privacy },
-    { merge: true }
-  );
+  await supabase.from("users")
+    .update({ privacy })
+    .eq("uid", currentUser.id);
 
   // ✅ INLINE "Saved" HINT
   saveStatus.classList.add("visible");
@@ -544,12 +502,10 @@ async function loadOrders() {
   const list = document.getElementById("ordersList");
   list.innerHTML = "";
 
-  const q = query(
-    collection(db, "users", currentUser.uid, "orders"),
-    orderBy("createdAt", "desc")
-  );
-
-  const snap = await getDocs(q);
+  const { data: orders } = await supabase.from("orders")
+    .select("*")
+    .eq("uid", currentUser.id)
+    .order("createdAt", { ascending: false });
 
   if (snap.empty) {
     list.innerHTML = `<div class="orders-empty">You haven’t made any purchases yet.</div>`;
@@ -610,10 +566,7 @@ async function createTicket() {
   };
 
 
-  await addDoc(
-    collection(db, "supportTickets"),
-    ticketData
-  );
+  await supabase.from("supportTickets").insert(ticketData);
 
   statusText.classList.add("visible");
   setTimeout(() => statusText.classList.remove("visible"), 2000);
@@ -631,37 +584,39 @@ async function loadTickets() {
   const list = document.getElementById("ticketList");
   list.innerHTML = "";
 
-  const snap = await getDocs(
-    query(
-      collection(db, "supportTickets"),
-      where("userId", "==", currentUser.uid),
-      orderBy("createdAt", "desc")
-    )
-  );
+  const { data: tickets, error } = await supabase
+    .from("supportTickets")
+    .select("*")
+    .eq("userId", currentUser.id)
+    .order("createdAt", { ascending: false });
 
-  if (snap.empty) {
+  if (error) {
+    console.error(error);
+    list.innerHTML = `<div class="orders-empty">Failed to load tickets.</div>`;
+    return;
+  }
+
+  if (!tickets || tickets.length === 0) {
     list.innerHTML = `<div class="orders-empty">No support tickets yet.</div>`;
     return;
   }
 
-  snap.forEach(docSnap => {
-    const t = docSnap.data();
-
+  tickets.forEach(t => {
     const row = document.createElement("div");
     row.className = "order-row";
 
     const status = normalizeTicketStatus(t.status);
 
     row.innerHTML = `
-      <span>#${docSnap.id.slice(0, 6)}</span>
+      <span>#${t.id.slice(0, 6)}</span>
       <span>${t.subject}</span>
       <span class="order-status ${status}">
         ${formatTicketStatus(status)}
       </span>
-      <span>${formatDate(t.createdAt?.toDate?.())}</span>
+      <span>${formatDate(new Date(t.createdAt))}</span>
       <span>
         <a class="primary-btn small-btn"
-           href="support-ticket.html?id=${docSnap.id}">
+          href="support-ticket.html?id=${t.id}">
           View
         </a>
       </span>

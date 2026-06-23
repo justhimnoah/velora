@@ -1,20 +1,4 @@
-import { auth, db } from "./firebase.js";
-
-import {
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-import {
-  doc,
-  getDoc,
-  updateDoc,
-  collection,
-  addDoc,
-  query,
-  orderBy,
-  onSnapshot,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { supabase } from "./supabase.js";
 
 /* =========================
    HELPERS
@@ -49,14 +33,11 @@ let messagesRef;
 /* =========================
    AUTH
 ========================= */
-onAuthStateChanged(auth, async user => {
-  if (!user || !ticketId) {
+supabase.auth.onAuthStateChange(async (_event, session) => {
+  if (!session?.user || !ticketId) {
     location.href = "index.html";
     return;
   }
-
-  ticketRef = doc(db, "supportTickets", ticketId);
-  messagesRef = collection(ticketRef, "messages");
 
   await loadTicket();
   listenToMessages();
@@ -66,14 +47,16 @@ onAuthStateChanged(auth, async user => {
    LOAD TICKET
 ========================= */
 async function loadTicket() {
-  const snap = await getDoc(ticketRef);
+  const { data: t, error } = await supabase
+    .from("supportTickets")
+    .select("*")
+    .eq("id", ticketId)
+    .maybeSingle();
 
-  if (!snap.exists()) {
+  if (error || !t) {
     alert("Ticket not found");
     return;
   }
-
-  const t = snap.data();
 
   ticketIdEl.textContent = `#${ticketId.slice(0, 6)}`;
   ticketSubjectEl.textContent = t.subject;
@@ -99,10 +82,9 @@ function setStatusUI(status) {
 statusSelect.onchange = async () => {
   const status = statusSelect.value;
 
-  await updateDoc(ticketRef, {
-    status,
-    updatedAt: serverTimestamp()
-  });
+  await supabase.from("supportTickets")
+    .update({ status, updatedAt: new Date() })
+    .eq("id", ticketId);
 
   setStatusUI(status);
 };
@@ -110,36 +92,47 @@ statusSelect.onchange = async () => {
 /* =========================
    LIVE MESSAGES
 ========================= */
-function listenToMessages() {
-  const q = query(messagesRef, orderBy("createdAt", "asc"));
+async function listenToMessages() {
+  const { data: initialMessages } = await supabase
+    .from("messages")
+    .select("*")
+    .eq("ticketId", ticketId)
+    .order("createdAt", { ascending: true });
 
-  onSnapshot(q, snap => {
-    threadEl.innerHTML = "";
+  renderMessages(initialMessages || []);
 
-    if (snap.empty) {
-      threadEl.innerHTML = `<div class="hint">No messages yet.</div>`;
-      return;
-    }
+  supabase.channel('messages')
+    .on(
+      'postgres_changes',
+      { event: 'INSERT', schema: 'public', table: 'messages', filter: `ticketId=eq.${ticketId}` },
+      payload => {
+        renderMessages([...(initialMessages || []), payload.new]);
+      }
+    )
+    .subscribe();
+}
 
-    snap.forEach(d => {
-      const m = d.data();
+function renderMessages(messages) {
+  threadEl.innerHTML = "";
+  if (!messages.length) {
+    threadEl.innerHTML = `<div class="hint">No messages yet.</div>`;
+    return;
+  }
 
-      const div = document.createElement("div");
-      div.className = `message ${m.sender}`;
-
-      div.innerHTML = `
-        <div>${m.text}</div>
-        <div class="message-meta">
-          ${m.sender === "admin" ? "Support" : "User"} •
-          ${formatDateTime(m.createdAt)}
-        </div>
-      `;
-
-      threadEl.appendChild(div);
-    });
-
-    threadEl.scrollTop = threadEl.scrollHeight;
+  messages.forEach(m => {
+    const div = document.createElement("div");
+    div.className = `message ${m.sender}`;
+    div.innerHTML = `
+      <div>${m.text}</div>
+      <div class="message-meta">
+        ${m.sender === "admin" ? "Support" : "User"} •
+        ${new Date(m.createdAt).toLocaleString()}
+      </div>
+    `;
+    threadEl.appendChild(div);
   });
+
+  threadEl.scrollTop = threadEl.scrollHeight;
 }
 
 /* =========================
@@ -152,10 +145,11 @@ sendReplyBtn.onclick = async () => {
   sendReplyBtn.disabled = true;
   replyStatus.textContent = "Sending…";
 
-  await addDoc(messagesRef, {
+  await supabase.from("messages").insert({
     text,
     sender: "admin",
-    createdAt: serverTimestamp()
+    ticketId,
+    createdAt: new Date()
   });
 
   replyInput.value = "";

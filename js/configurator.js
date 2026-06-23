@@ -3,20 +3,11 @@
 ====================================== */
 
 /* ---------- IMPORTS ---------- */
-import { db, auth } from "./firebase.js";
-import {
-  doc,
-  setDoc,
-  collection,
-  addDoc
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import {
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { supabase } from "./supabase.js";
 
 /* ---------- AUTH GUARD ---------- */
-onAuthStateChanged(auth, user => {
-  if (!user) {
+supabase.auth.onAuthStateChange((_event, session) => {
+  if (!session?.user) {
     window.location.replace("login.html");
   }
 });
@@ -205,13 +196,15 @@ setup("[data-battery]", (l, p) => { state.controller.battery = l; state.prices.c
 
 /* ---------- ADD TO CART ---------- */
 async function saveBuildToCart(redirectTo) {
-  const user = auth.currentUser;
+  const { data: { user } } = await supabase.auth.getUser();
   if (!user) {
     window.location.href = "login.html";
     return;
   }
 
   const cartData = {
+    user_id: user.id,
+    type: "console",
     tier: state.tier,
     storage: state.storage,
     controller: state.controller,
@@ -223,13 +216,14 @@ async function saveBuildToCart(redirectTo) {
       state.prices.tier +
       state.prices.storage +
       controllerTotal(),
-    createdAt: Date.now()
+    created_at: new Date()
   };
 
-  await addDoc(
-    collection(db, "users", user.uid, "cart"),
-    cartData
-  );
+  const { error } = await supabase.from("cart").insert(cartData);
+  if (error) {
+    console.error("Failed to save cart:", error);
+    return;
+  }
 
   window.location.href = redirectTo;
 }

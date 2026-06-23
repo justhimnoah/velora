@@ -1,14 +1,4 @@
-import { auth } from "./firebase.js";
-import { db } from "./firebase.js";
-import {
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import {
-  collection,
-  getDocs,
-  deleteDoc,
-  doc
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { supabase } from "./supabase.js";
 
 const container = document.getElementById("cartContainer");
 
@@ -79,28 +69,32 @@ function renderCart(items, uid) {
 
   document.querySelectorAll(".danger").forEach(btn => {
     btn.onclick = async () => {
-      await deleteDoc(
-        doc(db, "users", uid, "cart", btn.dataset.id)
-      );
+      await supabase
+        .from("cart")
+        .delete()
+        .eq("id", btn.dataset.id)
+        .eq("user_id", uid);
       location.reload();
     };
   });
 }
 
-onAuthStateChanged(auth, async user => {
-  if (!user) {
+supabase.auth.onAuthStateChange(async (_event, session) => {
+  if (!session?.user) {
     window.location.replace("login.html");
     return;
   }
 
-  const snap = await getDocs(
-    collection(db, "users", user.uid, "cart")
-  );
+  const { data: items, error } = await supabase
+    .from("cart")
+    .select("*")
+    .eq("user_id", session.user.id);
 
-  const items = snap.docs.map(d => ({
-    id: d.id,
-    ...d.data()
-  }));
+  if (error) {
+    console.error(error);
+    container.innerHTML = "<p>Failed to load cart.</p>";
+    return;
+  }
 
-  renderCart(items, user.uid);
+  renderCart(items || [], session.user.id);
 });

@@ -47,6 +47,9 @@ function showError(msg) {
 function showSuccess(msg) {
   error.style.color = "#6bff9e";
   error.textContent = msg;
+  setTimeout(() => {
+    error.textContent = "";
+    }, 10000);
 }
 
 function updateButtonState() {
@@ -185,7 +188,7 @@ resetPassword.onclick = async e => {
   e.preventDefault();
   const { error: resetError } = await supabase.auth.resetPasswordForEmail(email.value.trim());
   if (resetError) showError("Invalid email");
-  else showSuccess("Password reset email sent");
+  else showSuccess(`Password reset email sent to ${email.value.trim()}`);
 };
 
 /* =====================
@@ -207,6 +210,8 @@ submitBtn.onclick = async () => {
         submitBtn.disabled = false;
         return;
       }
+
+    showSuccess(`Welcome back, ${data.user.email}! Redirecting...`);
       window.location.href = "index.html";
       return;
     }
@@ -223,6 +228,10 @@ submitBtn.onclick = async () => {
       showError(signupError.message);
       submitBtn.disabled = false;
       return;
+    }
+
+    if (data.user) {
+      showSuccess(`Account created for ${data.user.email}. Check your inbox for a verification email.`);
     }
 
     if (data.user) {

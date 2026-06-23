@@ -1,8 +1,6 @@
 // admin.js
 
-import { auth, db } from "./firebase.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { supabase } from "./supabase.js";
 
 /* =========================
    ELEMENTS
@@ -13,23 +11,26 @@ const openSupportBtn = document.getElementById("openSupportBtn");
 /* =========================
    AUTH + ROLE GUARD
 ========================= */
-onAuthStateChanged(auth, async (user) => {
-  // ❌ Not logged in → kick immediately
-  if (!user) {
+supabase.auth.onAuthStateChange(async (_event, session) => {
+  if (!session?.user) {
     window.location.replace("index.html");
     return;
   }
 
   try {
-    /* ---------- ROLE CHECK ---------- */
-    const roleSnap = await getDoc(doc(db, "roles", user.uid));
+    // ---------- ROLE CHECK ----------
+    const { data: roleRow, error: roleError } = await supabase
+      .from("roles")
+      .select("role")
+      .eq("uid", session.user.id)
+      .maybeSingle();
 
-    if (!roleSnap.exists()) {
+    if (roleError || !roleRow) {
       window.location.replace("index.html");
       return;
     }
 
-    const role = roleSnap.data().role;
+    const role = roleRow.role;
 
     // ❌ Not admin or supportStaff → kick
     if (role !== "admin" && role !== "supportStaff") {
@@ -37,27 +38,26 @@ onAuthStateChanged(auth, async (user) => {
       return;
     }
 
-    /* ---------- UI PERMISSIONS ---------- */
-
-    // Support panel visible for BOTH admin & supportStaff
+    // ---------- UI PERMISSIONS ----------
     if (openSupportBtn) {
       openSupportBtn.style.display = "block";
     }
 
-    // If supportStaff, hide admin-only sections
     if (role === "supportStaff") {
-      document
-        .querySelectorAll(".admin-only")
+      document.querySelectorAll(".admin-only")
         .forEach(el => el.style.display = "none");
     }
 
-    /* ---------- LOAD USER INFO ---------- */
-    const userSnap = await getDoc(doc(db, "users", user.uid));
+    // ---------- LOAD USER INFO ----------
+    const { data: userRow } = await supabase
+      .from("users")
+      .select("veloraId, displayName")
+      .eq("uid", session.user.id)
+      .maybeSingle();
 
-    if (userSnap.exists()) {
-      const data = userSnap.data();
+    if (userRow) {
       adminNameEl.textContent =
-        data.veloraId || data.displayName || "Admin";
+        userRow.veloraId || userRow.displayName || "Admin";
     } else {
       adminNameEl.textContent = "Admin";
     }

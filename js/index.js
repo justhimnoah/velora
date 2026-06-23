@@ -1,14 +1,29 @@
-import { auth } from "./firebase.js";
-import {
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { supabase } from "./supabase.js";
 
 const btn = document.getElementById("buildBtn");
 
-onAuthStateChanged(auth, user => {
+async function checkSession() {
+  const { data: { session } } = await supabase.auth.getSession();
+
   if (!btn) return;
 
-  if (user) {
+  if (session?.user) {
+    btn.textContent = "Open Configurator";
+    btn.href = "configurator.html";
+  } else {
+    btn.textContent = "Sign in to build";
+    btn.href = "login.html";
+  }
+}
+
+// Run once on page load
+checkSession();
+
+// Subscribe to changes
+supabase.auth.onAuthStateChange((_event, session) => {
+  if (!btn) return;
+
+  if (session?.user) {
     btn.textContent = "Open Configurator";
     btn.href = "configurator.html";
   } else {

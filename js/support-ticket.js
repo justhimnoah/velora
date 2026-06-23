@@ -1,16 +1,4 @@
-import { auth, db } from "./firebase.js";
-import { onAuthStateChanged } from
-  "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-import {
-  doc,
-  collection,
-  query,
-  orderBy,
-  addDoc,
-  onSnapshot,  
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { supabase } from "./supabase.js";
 
 /* =========================
    HELPERS
@@ -49,8 +37,8 @@ function applyResolvedState(status) {
    INIT
 ========================= */
 
-onAuthStateChanged(auth, async user => {
-  if (!user || !ticketId) {
+supabase.auth.onAuthStateChange(async (_event, session) => {
+  if (!session?.user || !ticketId) {
     location.href = "login.html";
     return;
   }
@@ -59,99 +47,116 @@ onAuthStateChanged(auth, async user => {
   listenToMessages(ticketId);
 
   document.getElementById("sendReplyBtn").onclick =
-    () => sendReply(ticketId);
+    () => sendReply(ticketId, session.user.id);
 });
 
 /* =========================
    LOAD TICKET
 ========================= */
 
-function listenToTicket(ticketId) {
-  const ref = doc(db, "supportTickets", ticketId);
+async function listenToTicket(ticketId) {
+  const { data: t, error } = await supabase
+    .from("supportTickets")
+    .select("*")
+    .eq("id", ticketId)
+    .maybeSingle();
 
-  onSnapshot(ref, snap => {
-    if (!snap.exists()) {
-      alert("Ticket not found");
-      return;
-    }
+  if (error || !t) {
+    alert("Ticket not found");
+    return;
+  }
 
-    const t = snap.data();
+  renderTicket(t);
 
-    document.getElementById("ticketId").textContent =
-      `#${ticketId.slice(0, 6)}`;
-    document.getElementById("ticketSubject").textContent = t.subject;
-    document.getElementById("ticketMeta").textContent =
-      `${t.category} • ${formatDateTime(t.createdAt)}`;
+  // Subscribe to realtime updates
+  supabase.channel('ticket-updates')
+    .on(
+      'postgres_changes',
+      { event: 'UPDATE', schema: 'public', table: 'supportTickets', filter: `id=eq.${ticketId}` },
+      payload => renderTicket(payload.new)
+    )
+    .subscribe();
+}
 
-    const statusEl = document.getElementById("ticketStatus");
-    statusEl.className = `order-status ${t.status}`;
-    statusEl.textContent =
-      t.status === "in_progress" ? "In Progress" :
-      t.status === "resolved" ? "Resolved" : "Open";
+function renderTicket(t) {
+  document.getElementById("ticketId").textContent = `#${ticketId.slice(0, 6)}`;
+  document.getElementById("ticketSubject").textContent = t.subject;
+  document.getElementById("ticketMeta").textContent =
+    `${t.category} • ${new Date(t.createdAt).toLocaleString()}`;
 
-    // 🔒 lock / unlock reply UI
-    applyResolvedState(t.status);
-  });
+  const statusEl = document.getElementById("ticketStatus");
+  statusEl.className = `order-status ${t.status}`;
+  statusEl.textContent =
+    t.status === "in_progress" ? "In Progress" :
+    t.status === "resolved" ? "Resolved" : "Open";
+
+  applyResolvedState(t.status);
 }
 
 /* =========================
    LIVE MESSAGES
 ========================= */
 
-function listenToMessages(ticketId) {
+async function listenToMessages(ticketId) {
   const thread = document.getElementById("ticketThread");
 
-  const q = query(
-    collection(db, "supportTickets", ticketId, "messages"),
-    orderBy("createdAt", "asc")
-  );
+  const { data: messages } = await supabase
+    .from("messages")
+    .select("*")
+    .eq("ticketId", ticketId)
+    .order("createdAt", { ascending: true });
 
-  onSnapshot(q, snap => {
-    thread.innerHTML = "";
+  renderMessages(messages || []);
 
-    if (snap.empty) {
-      thread.innerHTML = `<div class="thread-empty">No replies yet.</div>`;
-      return;
-    }
+  supabase.channel('messages')
+    .on(
+      'postgres_changes',
+      { event: 'INSERT', schema: 'public', table: 'messages', filter: `ticketId=eq.${ticketId}` },
+      payload => renderMessages([...(messages || []), payload.new])
+    )
+    .subscribe();
+}
 
-    snap.forEach(d => {
-      const m = d.data();
+function renderMessages(messages) {
+  const thread = document.getElementById("ticketThread");
+  thread.innerHTML = "";
 
-      const div = document.createElement("div");
-      div.className = `message ${m.sender}`;
+  if (!messages.length) {
+    thread.innerHTML = `<div class="thread-empty">No replies yet.</div>`;
+    return;
+  }
 
-      div.innerHTML = `
-        <div>${m.text}</div>
-        <div class="message-meta">
-          ${m.sender === "admin" ? "Support" : "You"} •
-          ${formatDateTime(m.createdAt)}
-        </div>
-      `;
-
-      thread.appendChild(div);
-    });
-
-    thread.scrollTop = thread.scrollHeight;
+  messages.forEach(m => {
+    const div = document.createElement("div");
+    div.className = `message ${m.sender}`;
+    div.innerHTML = `
+      <div>${m.text}</div>
+      <div class="message-meta">
+        ${m.sender === "admin" ? "Support" : "You"} •
+        ${new Date(m.createdAt).toLocaleString()}
+      </div>
+    `;
+    thread.appendChild(div);
   });
+
+  thread.scrollTop = thread.scrollHeight;
 }
 
 /* =========================
    SEND REPLY
 ========================= */
 
-async function sendReply(ticketId) {
+async function sendReply(ticketId, userId) {
   const input = document.getElementById("replyInput");
   const text = input.value.trim();
   if (!text) return;
 
-  await addDoc(
-    collection(db, "supportTickets", ticketId, "messages"),
-    {
-      text,
-      sender: "user",
-      createdAt: serverTimestamp()
-    }
-  );
+  await supabase.from("messages").insert({
+    ticketId,
+    text,
+    sender: "user",
+    createdAt: new Date()
+  });
 
   input.value = "";
 }

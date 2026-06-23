@@ -1,18 +1,4 @@
-import { auth } from "./firebase.js";
-import { db } from "./firebase.js";
-
-import {
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-import {
-  collection,
-  getDocs,
-  query,
-  orderBy,
-  doc,
-  getDoc
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { supabase } from "./supabase.js";
 
 let allTickets = [];
 let currentFilter = "all";
@@ -21,14 +7,19 @@ let currentFilter = "all";
    AUTH + ROLE CHECK
 ========================= */
 
-onAuthStateChanged(auth, async user => {
-  if (!user) {
+supabase.auth.onAuthStateChange(async (_event, session) => {
+  if (!session?.user) {
     window.location.href = "index.html";
     return;
   }
 
-  const roleSnap = await getDoc(doc(db, "roles", user.uid));
-  const role = roleSnap.exists() ? roleSnap.data().role : null;
+  const { data: roleRow } = await supabase
+    .from("roles")
+    .select("role")
+    .eq("uid", session.user.id)
+    .maybeSingle();
+
+  const role = roleRow?.role || null;
 
   if (!["admin", "support"].includes(role)) {
     window.location.href = "index.html";
@@ -45,15 +36,17 @@ onAuthStateChanged(auth, async user => {
 async function loadTickets() {
   const table = document.getElementById("ticketTable");
 
-  const snap = await getDocs(
-    query(collection(db, "supportTickets"), orderBy("createdAt", "desc"))
-  );
+  const { data: tickets, error } = await supabase
+    .from("supportTickets")
+    .select("*")
+    .order("createdAt", { ascending: false });
 
-  allTickets = snap.docs.map(d => ({
-    id: d.id,
-    ...d.data()
-  }));
+  if (error) {
+    console.error(error);
+    return;
+  }
 
+  allTickets = tickets || [];
   renderTickets();
 }
 
